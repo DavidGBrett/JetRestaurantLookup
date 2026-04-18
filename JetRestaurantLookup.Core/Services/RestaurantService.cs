@@ -33,6 +33,9 @@ namespace JetRestaurantLookup.Core.Services
 
         public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(postcode);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
+
             var rawData = await GetRawRestaurantsDataAsync(postcode);
 
             using var doc = JsonDocument.Parse(rawData);
