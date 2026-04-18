@@ -1,6 +1,30 @@
-﻿namespace JetRestaurantLookup.ViewModels;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using JetRestaurantLookup.Core.Models;
+using JetRestaurantLookup.Core.Services;
+
+namespace JetRestaurantLookup.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    
+    [ObservableProperty]
+    public partial string Postcode { get; set; } = "EC4M7RF";
+
+    [ObservableProperty]
+    public partial string RestaurantsText { get; set; } = "Loading...";
+
+    [ObservableProperty]
+    public partial ObservableCollection<Restaurant> Restaurants { get; set; } = [];
+
+    [RelayCommand]
+    private async Task LoadRestaurantsAsync()
+    {
+        var restaurants = await new RestaurantService().GetRestaurantsAsync(Postcode);
+
+        Restaurants = new ObservableCollection<Restaurant>(restaurants);
+        RestaurantsText = string.Join(",\n", restaurants.Select(r=>r.Name));
+    }
 }
