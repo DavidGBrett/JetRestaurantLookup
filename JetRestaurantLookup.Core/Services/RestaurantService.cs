@@ -15,11 +15,6 @@ namespace JetRestaurantLookup.Core.Services
 
         private static readonly HttpClient _httpClient = new();
 
-        public RestaurantService()
-        {
-            
-        }
-
         /// <summary>
         /// Fetches the raw JSON response for restaurants in the given postcode.
         /// </summary>
@@ -29,9 +24,7 @@ namespace JetRestaurantLookup.Core.Services
 
             response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
-
-            return content;
+            return await response.Content.ReadAsStringAsync();
         }
 
         /// <summary>
@@ -50,9 +43,9 @@ namespace JetRestaurantLookup.Core.Services
 
             using var doc = JsonDocument.Parse(rawData);
 
-            JsonElement restaurants = doc.RootElement.GetProperty("restaurants");
+            JsonElement restaurantsElement = doc.RootElement.GetProperty("restaurants");
 
-            List<Restaurant> firstNRestaurants = restaurants
+            return restaurantsElement
                 .EnumerateArray()
                 .Take(count)
                 .Select(
@@ -61,8 +54,6 @@ namespace JetRestaurantLookup.Core.Services
                 )
                 .Select(RestaurantMapper.ToModel)
                 .ToList();
-
-            return firstNRestaurants;
         }
 
         /// <summary>
