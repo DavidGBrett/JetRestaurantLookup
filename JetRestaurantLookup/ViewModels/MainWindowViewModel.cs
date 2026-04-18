@@ -14,9 +14,6 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial string Postcode { get; set; } = "EC4M7RF";
 
     [ObservableProperty]
-    public partial string RestaurantsText { get; set; } = "Loading...";
-
-    [ObservableProperty]
     public partial ObservableCollection<Restaurant> Restaurants { get; set; } = [];
 
     [RelayCommand]
@@ -25,6 +22,5 @@ public partial class MainWindowViewModel : ViewModelBase
         var restaurants = await new RestaurantService().GetRestaurantsAsync(Postcode);
 
         Restaurants = new ObservableCollection<Restaurant>(restaurants);
-        RestaurantsText = string.Join(",\n", restaurants.Select(r=>r.Name));
     }
 }

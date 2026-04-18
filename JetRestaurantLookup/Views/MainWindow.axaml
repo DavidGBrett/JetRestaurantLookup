@@ -14,7 +14,26 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-    <TextBlock Text="{Binding RestaurantsText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Text="{Binding Postcode, Mode=TwoWay}">
+            <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
+            </TextBox.KeyBindings>
+        </TextBox>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Restaurants}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Address.FirstLine}" />
+                        <TextBlock Text="{Binding Rating.StarRating, StringFormat='{}{0} stars'}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </Window>
