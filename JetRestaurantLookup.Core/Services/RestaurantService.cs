@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace JetRestaurantLookup.Core.Services
@@ -14,7 +15,7 @@ namespace JetRestaurantLookup.Core.Services
             
         }
 
-        public async Task<string> GetRawRestaurantsDataAsync(string postcode)
+        private async Task<string> GetRawRestaurantsDataAsync(string postcode)
         {
             var response = await _httpClient.GetAsync($"{BaseApiUrl}/{postcode}");
 
@@ -25,5 +26,21 @@ namespace JetRestaurantLookup.Core.Services
             return content;
         }
 
+        public async Task<List<string>> GetNRestaurantsAsync(string postcode, int n)
+        {
+            var rawData = await GetRawRestaurantsDataAsync(postcode);
+
+            using var doc = JsonDocument.Parse(rawData);
+
+            JsonElement restaurants = doc.RootElement.GetProperty("restaurants");
+
+            List<string> firstNRestaurants = restaurants
+                .EnumerateArray()
+                .Take(n)
+                .Select(r => r.ToString())
+                .ToList();
+
+            return firstNRestaurants;
+        }
     }
 }
