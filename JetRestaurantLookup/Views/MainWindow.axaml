@@ -15,5 +15,6 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <TextBlock Text="{Binding RestaurantsText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 </Window>
