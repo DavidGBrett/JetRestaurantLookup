@@ -19,7 +19,7 @@ public partial class MainWindow : Window
     {
         RestaurantsTextBlock.Text = "Loading...";
 
-        var restaurants = await _restaurantService.GetRestaurantsAsync("EC4M7RF",10);
+        var restaurants = await _restaurantService.GetRestaurantsAsync("EC4M7RF");
         Debug.WriteLine(restaurants);
 
         RestaurantsTextBlock.Text = string.Join(",\n",restaurants);

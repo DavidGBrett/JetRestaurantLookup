@@ -10,6 +10,7 @@ namespace JetRestaurantLookup.Core.Services
     public class RestaurantService
     {
         private const string BaseApiUrl = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
+        private const int DefaultCount = 10;
         private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
 
         private static readonly HttpClient _httpClient = new();
@@ -50,5 +51,8 @@ namespace JetRestaurantLookup.Core.Services
 
             return firstNRestaurants;
         }
+        
+        public Task<List<Restaurant>> GetRestaurantsAsync(string postcode)
+            => GetRestaurantsAsync(postcode, DefaultCount);
     }
 }
