@@ -20,6 +20,9 @@ namespace JetRestaurantLookup.Core.Services
             
         }
 
+        /// <summary>
+        /// Fetches the raw JSON response for restaurants in the given postcode.
+        /// </summary>
         private async Task<string> GetRawRestaurantsDataAsync(string postcode)
         {
             var response = await _httpClient.GetAsync($"{BaseApiUrl}/{postcode}");
@@ -31,6 +34,13 @@ namespace JetRestaurantLookup.Core.Services
             return content;
         }
 
+        /// <summary>
+        /// Returns up to <paramref name="count"/> restaurants in the given postcode.
+        /// </summary>
+        /// <param name="postcode">The UK postcode to search in.</param>
+        /// <param name="count">The maximum number of restaurants to return.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="postcode"/> is null or whitespace.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is zero or negative.</exception>
         public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(postcode);
@@ -54,7 +64,12 @@ namespace JetRestaurantLookup.Core.Services
 
             return firstNRestaurants;
         }
-        
+
+        /// <summary>
+        /// Returns up to <see cref="DefaultCount"/> restaurants in the given postcode.
+        /// </summary>
+        /// <param name="postcode">The UK postcode to search in.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="postcode"/> is null or whitespace.</exception>
         public Task<List<Restaurant>> GetRestaurantsAsync(string postcode)
             => GetRestaurantsAsync(postcode, DefaultCount);
     }
