@@ -1,12 +1,16 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using JetRestaurantLookup.Core.Dtos;
+using JetRestaurantLookup.Core.Mappers;
+using JetRestaurantLookup.Core.Models;
 
 namespace JetRestaurantLookup.Core.Services
 {
     public class RestaurantService
     {
         private const string BaseApiUrl = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
+        private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
 
         private static readonly HttpClient _httpClient = new();
 
@@ -26,7 +30,7 @@ namespace JetRestaurantLookup.Core.Services
             return content;
         }
 
-        public async Task<List<string>> GetNRestaurantsAsync(string postcode, int n)
+        public async Task<List<Restaurant>> GetNRestaurantsAsync(string postcode, int n)
         {
             var rawData = await GetRawRestaurantsDataAsync(postcode);
 
@@ -34,10 +38,14 @@ namespace JetRestaurantLookup.Core.Services
 
             JsonElement restaurants = doc.RootElement.GetProperty("restaurants");
 
-            List<string> firstNRestaurants = restaurants
+            List<Restaurant> firstNRestaurants = restaurants
                 .EnumerateArray()
                 .Take(n)
-                .Select(r => r.ToString())
+                .Select(
+                    r => JsonSerializer.Deserialize<RestaurantDto>(r, _jsonOptions)
+                    ?? throw new InvalidDataException("Unexpected null restaurant")
+                )
+                .Select(RestaurantMapper.ToModel)
                 .ToList();
 
             return firstNRestaurants;
