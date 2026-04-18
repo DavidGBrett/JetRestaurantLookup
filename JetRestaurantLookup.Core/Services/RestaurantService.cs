@@ -30,7 +30,7 @@ namespace JetRestaurantLookup.Core.Services
             return content;
         }
 
-        public async Task<List<Restaurant>> GetNRestaurantsAsync(string postcode, int n)
+        public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count)
         {
             var rawData = await GetRawRestaurantsDataAsync(postcode);
 
@@ -40,7 +40,7 @@ namespace JetRestaurantLookup.Core.Services
 
             List<Restaurant> firstNRestaurants = restaurants
                 .EnumerateArray()
-                .Take(n)
+                .Take(count)
                 .Select(
                     r => JsonSerializer.Deserialize<RestaurantDto>(r, _jsonOptions)
                     ?? throw new InvalidDataException("Unexpected null restaurant")
