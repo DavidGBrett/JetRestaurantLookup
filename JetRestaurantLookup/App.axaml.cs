@@ -4,6 +4,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using System.Net.Http;
 using JetRestaurantLookup.Core.Services;
 using JetRestaurantLookup.ViewModels;
 using JetRestaurantLookup.Views;
@@ -12,6 +13,8 @@ namespace JetRestaurantLookup;
 
 public partial class App : Application
 {
+    private static readonly HttpClient _httpClient = new();
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -23,7 +26,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(new RestaurantService()),
+                DataContext = new MainWindowViewModel(new RestaurantService(_httpClient)),
             };
         }
 

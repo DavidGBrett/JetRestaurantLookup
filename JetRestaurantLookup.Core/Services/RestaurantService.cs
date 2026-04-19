@@ -13,7 +13,12 @@ namespace JetRestaurantLookup.Core.Services
         private const int DefaultCount = 10;
         private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
 
-        private static readonly HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient;
+
+        public RestaurantService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         /// <summary>
         /// Fetches the raw JSON response for restaurants in the given postcode.
