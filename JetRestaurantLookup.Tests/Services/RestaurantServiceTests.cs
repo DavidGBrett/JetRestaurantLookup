@@ -152,4 +152,21 @@ public class RestaurantServiceTests
         await Assert.ThrowsAsync<HttpRequestException>(() =>
             service.GetRestaurantsAsync(TestPostcode));
     }
+
+    // --- Postcode formatting ---
+
+    [Theory]
+    [InlineData("EC4M 7RF")]
+    [InlineData("ec4m7rf")]
+    [InlineData("ec4m 7rf")]
+    public async Task GetRestaurantsAsync_PostcodeVariants_UsesCorrectApiFormat(string postcode)
+    {
+        var (service, mockHttp) = CreateService();
+        mockHttp.Expect($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
+                .Respond("application/json", BuildResponseJson(1));
+
+        await service.GetRestaurantsAsync(postcode);
+
+        mockHttp.VerifyNoOutstandingExpectation();
+    }
 }

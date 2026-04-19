@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using JetRestaurantLookup.Core.Dtos;
 using JetRestaurantLookup.Core.Mappers;
 using JetRestaurantLookup.Core.Models;
+using JetRestaurantLookup.Core.Utilities;
 
 namespace JetRestaurantLookup.Core.Services
 {
@@ -36,7 +37,7 @@ namespace JetRestaurantLookup.Core.Services
             ArgumentException.ThrowIfNullOrWhiteSpace(postcode);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
-            var rawData = await GetRawRestaurantsDataAsync(postcode);
+            var rawData = await GetRawRestaurantsDataAsync(Postcodes.WithoutSpace(postcode));
 
             using var doc = JsonDocument.Parse(rawData);
 
