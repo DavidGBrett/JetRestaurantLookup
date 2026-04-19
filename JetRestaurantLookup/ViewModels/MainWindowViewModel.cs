@@ -10,6 +10,13 @@ namespace JetRestaurantLookup.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly IRestaurantService _restaurantService;
+
+    public MainWindowViewModel(IRestaurantService restaurantService)
+    {
+        _restaurantService = restaurantService;
+    }
+
     [ObservableProperty]
     public partial string Postcode { get; set; } = "EC4M7RF";
 
@@ -19,7 +26,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
     {
-        var restaurants = await new RestaurantService().GetRestaurantsAsync(Postcode);
+        var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
         Restaurants = new ObservableCollection<Restaurant>(restaurants);
     }
