@@ -7,7 +7,6 @@ namespace JetRestaurantLookup.Tests.Services;
 
 public class RestaurantServiceTests
 {
-    private const string BaseUrl = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
     private const string TestPostcode = "EC4M7RF";
 
     private static (RestaurantService Service, MockHttpMessageHandler MockHttp) CreateService()
@@ -40,7 +39,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_ValidPostcode_ParsesResponseIntoRestaurant()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond("application/json", BuildResponseJson(1));
 
         var results = await service.GetRestaurantsAsync(TestPostcode);
@@ -53,7 +52,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_CountRespected_ReturnsTrimmedList()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond("application/json", BuildResponseJson(5));
 
         var results = await service.GetRestaurantsAsync(TestPostcode, count: 3);
@@ -65,7 +64,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_CountExceedsAvailable_ReturnsAllRestaurants()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond("application/json", BuildResponseJson(2));
 
         var results = await service.GetRestaurantsAsync(TestPostcode, count: 10);
@@ -77,7 +76,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_EmptyRestaurantsArray_ReturnsEmptyList()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond("application/json", """{ "restaurants": [] }""");
 
         var results = await service.GetRestaurantsAsync(TestPostcode);
@@ -89,7 +88,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_DefaultCount_ReturnsUpToTen()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond("application/json", BuildResponseJson(15));
 
         var results = await service.GetRestaurantsAsync(TestPostcode);
@@ -136,7 +135,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_ApiReturns404_ThrowsHttpRequestException()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond(HttpStatusCode.NotFound);
 
         await Assert.ThrowsAsync<HttpRequestException>(() =>
@@ -147,7 +146,7 @@ public class RestaurantServiceTests
     public async Task GetRestaurantsAsync_ApiReturns500_ThrowsHttpRequestException()
     {
         var (service, mockHttp) = CreateService();
-        mockHttp.When($"{BaseUrl}/{TestPostcode}")
+        mockHttp.When($"{RestaurantService.BaseApiUrl}/{TestPostcode}")
                 .Respond(HttpStatusCode.InternalServerError);
 
         await Assert.ThrowsAsync<HttpRequestException>(() =>
