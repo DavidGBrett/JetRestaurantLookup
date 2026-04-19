@@ -10,9 +10,9 @@ namespace JetRestaurantLookup.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly RestaurantService _restaurantService;
+    private readonly IRestaurantService _restaurantService;
 
-    public MainWindowViewModel(RestaurantService restaurantService)
+    public MainWindowViewModel(IRestaurantService restaurantService)
     {
         _restaurantService = restaurantService;
     }

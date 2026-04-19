@@ -7,7 +7,7 @@ using JetRestaurantLookup.Core.Models;
 
 namespace JetRestaurantLookup.Core.Services
 {
-    public class RestaurantService
+    public class RestaurantService : IRestaurantService
     {
         private const string BaseApiUrl = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
         private const int DefaultCount = 10;
@@ -32,13 +32,6 @@ namespace JetRestaurantLookup.Core.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        /// <summary>
-        /// Returns up to <paramref name="count"/> restaurants in the given postcode.
-        /// </summary>
-        /// <param name="postcode">The UK postcode to search in.</param>
-        /// <param name="count">The maximum number of restaurants to return.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="postcode"/> is null or whitespace.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is zero or negative.</exception>
         public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(postcode);
@@ -61,11 +54,6 @@ namespace JetRestaurantLookup.Core.Services
                 .ToList();
         }
 
-        /// <summary>
-        /// Returns up to <see cref="DefaultCount"/> restaurants in the given postcode.
-        /// </summary>
-        /// <param name="postcode">The UK postcode to search in.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="postcode"/> is null or whitespace.</exception>
         public Task<List<Restaurant>> GetRestaurantsAsync(string postcode)
             => GetRestaurantsAsync(postcode, DefaultCount);
     }
