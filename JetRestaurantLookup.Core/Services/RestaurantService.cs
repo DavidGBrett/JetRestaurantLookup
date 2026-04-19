@@ -32,7 +32,7 @@ namespace JetRestaurantLookup.Core.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count)
+        public async Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count = 10)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(postcode);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
@@ -53,8 +53,5 @@ namespace JetRestaurantLookup.Core.Services
                 .Select(RestaurantMapper.ToModel)
                 .ToList();
         }
-
-        public Task<List<Restaurant>> GetRestaurantsAsync(string postcode)
-            => GetRestaurantsAsync(postcode, DefaultCount);
     }
 }
