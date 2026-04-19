@@ -10,7 +10,6 @@ namespace JetRestaurantLookup.Core.Services
     public class RestaurantService : IRestaurantService
     {
         internal const string BaseApiUrl = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
-        private const int DefaultCount = 10;
         private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
 
         private readonly HttpClient _httpClient;
