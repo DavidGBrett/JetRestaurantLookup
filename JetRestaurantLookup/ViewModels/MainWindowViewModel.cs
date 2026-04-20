@@ -36,7 +36,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (restaurants.Count == 0)
         {
-            StatusMessage = "No restaurants found for this postcode.";
+            StatusMessage = Postcodes.IsValid(Postcode)
+                ? "No restaurants found for this postcode."
+                : "No restaurants found. Your postcode doesn't look right — check it and try again.";
         }
         else
         {
