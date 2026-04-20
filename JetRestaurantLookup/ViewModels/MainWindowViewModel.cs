@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JetRestaurantLookup.Core.Models;
 using JetRestaurantLookup.Core.Services;
 using JetRestaurantLookup.Core.Utilities;
 
@@ -25,7 +24,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial string? StatusMessage { get; set; }
 
     [ObservableProperty]
-    public partial ObservableCollection<Restaurant> Restaurants { get; set; } = [];
+    public partial ObservableCollection<RestaurantCardViewModel> Restaurants { get; set; } = [];
 
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
@@ -38,7 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
-        Restaurants = new ObservableCollection<Restaurant>(restaurants);
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(restaurants.Select(r => new RestaurantCardViewModel(r)));
 
         if (restaurants.Count == 0)
         {

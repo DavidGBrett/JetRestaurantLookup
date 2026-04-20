@@ -9,6 +9,7 @@ namespace JetRestaurantLookup.Core.Mappers
         {
             Id = dto.Id,
             Name = dto.Name,
+            LogoUrl = dto.LogoUrl,
             Address = AddressMapper.ToModel(dto.Address),
             Rating = RatingMapper.ToModel(dto.Rating),
             Cuisines = dto.Cuisines.Select(c => c.Name).ToList()

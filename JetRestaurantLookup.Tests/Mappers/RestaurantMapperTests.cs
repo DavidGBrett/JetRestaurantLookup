@@ -9,6 +9,7 @@ public class RestaurantMapperTests
     {
         Id = "123",
         Name = "Test Restaurant",
+        LogoUrl = "https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/212716.gif",
         Address = new AddressDto
         {
             City = "London",
@@ -32,6 +33,7 @@ public class RestaurantMapperTests
 
         Assert.Equal(dto.Id, model.Id);
         Assert.Equal(dto.Name, model.Name);
+        Assert.Equal(dto.LogoUrl, model.LogoUrl);
     }
 
     [Fact]
