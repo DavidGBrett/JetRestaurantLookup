@@ -27,7 +27,29 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial ObservableCollection<RestaurantCardViewModel> Restaurants { get; set; } = [];
 
     [ObservableProperty]
-    public partial ObservableCollection<string> AvailableCuisines { get; set; } = [];
+    public partial ObservableCollection<CuisineFilterViewModel> AvailableCuisines { get; set; } = [];
+
+    private List<RestaurantCardViewModel> _allRestaurants = [];
+
+    private void OnCuisineFilterChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(CuisineFilterViewModel.IsSelected))
+            ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        var selectedCuisines = AvailableCuisines.Where(c => c.IsSelected).Select(c => c.Name).ToList();
+
+        if (selectedCuisines.Count == 0)
+        {
+            Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
+            return;
+        }
+
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(
+            _allRestaurants.Where(r => selectedCuisines.All(cuisine => r.Cuisines.Contains(cuisine))));
+    }
 
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
@@ -40,10 +62,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
-        Restaurants = new ObservableCollection<RestaurantCardViewModel>(restaurants.Select(r => new RestaurantCardViewModel(r)));
+        _allRestaurants = restaurants.Select(r => new RestaurantCardViewModel(r)).ToList();
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
 
-        AvailableCuisines = new ObservableCollection<string>(
-            restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c));
+        AvailableCuisines = new ObservableCollection<CuisineFilterViewModel>(
+            restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c)
+                       .Select(name => new CuisineFilterViewModel { Name = name }));
+
+        foreach (var cuisine in AvailableCuisines)
+            cuisine.PropertyChanged += OnCuisineFilterChanged;
 
         if (restaurants.Count == 0)
         {
