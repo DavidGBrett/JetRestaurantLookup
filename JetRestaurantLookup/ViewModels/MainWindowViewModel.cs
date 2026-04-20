@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JetRestaurantLookup.Core.Models;
 using JetRestaurantLookup.Core.Services;
+using JetRestaurantLookup.Core.Utilities;
 
 namespace JetRestaurantLookup.ViewModels;
 
@@ -21,6 +22,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial string Postcode { get; set; } = "EC4M7RF";
 
     [ObservableProperty]
+    public partial string? StatusMessage { get; set; }
+
+    [ObservableProperty]
     public partial ObservableCollection<Restaurant> Restaurants { get; set; } = [];
 
     [RelayCommand]
@@ -29,5 +33,14 @@ public partial class MainWindowViewModel : ViewModelBase
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
         Restaurants = new ObservableCollection<Restaurant>(restaurants);
+
+        if (restaurants.Count == 0)
+        {
+            StatusMessage = "No restaurants found for this postcode.";
+        }
+        else
+        {
+            StatusMessage = null;
+        }
     }
 }
