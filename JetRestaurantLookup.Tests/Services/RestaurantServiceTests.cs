@@ -21,6 +21,7 @@ public class RestaurantServiceTests
         {
             "id": "{{i}}",
             "name": "Restaurant {{i}}",
+            "logoUrl": "https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/212716.gif",
             "address": { "city": "London", "firstLine": "{{i}} Example Street", "postalCode": "EC4M 7RF" },
             "rating": { "count": 100, "starRating": 4.5 },
             "cuisines": [{ "name": "Italian" }]
