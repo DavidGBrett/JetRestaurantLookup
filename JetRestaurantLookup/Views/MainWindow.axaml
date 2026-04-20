@@ -30,12 +30,28 @@
                    Text="{Binding StatusMessage}"
                    IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                    Margin="4,2" />
-        <ListBox Grid.Row="2" ItemsSource="{Binding Restaurants}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <views:RestaurantCard />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid Grid.Row="2" ColumnDefinitions="180,*">
+            <ScrollViewer Grid.Column="0"
+                          BorderBrush="Gray" BorderThickness="0,0,1,0"
+                          Padding="8">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Cuisines" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <ItemsControl ItemsSource="{Binding AvailableCuisines}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="13" Padding="2,2" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+            <ListBox Grid.Column="1" ItemsSource="{Binding Restaurants}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <views:RestaurantCard />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </Window>

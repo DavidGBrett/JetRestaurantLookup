@@ -26,6 +26,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial ObservableCollection<RestaurantCardViewModel> Restaurants { get; set; } = [];
 
+    [ObservableProperty]
+    public partial ObservableCollection<string> AvailableCuisines { get; set; } = [];
+
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
     {
@@ -38,6 +41,9 @@ public partial class MainWindowViewModel : ViewModelBase
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(restaurants.Select(r => new RestaurantCardViewModel(r)));
+
+        AvailableCuisines = new ObservableCollection<string>(
+            restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c));
 
         if (restaurants.Count == 0)
         {
