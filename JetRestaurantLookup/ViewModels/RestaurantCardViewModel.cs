@@ -5,6 +5,7 @@ namespace JetRestaurantLookup.ViewModels;
 public class RestaurantCardViewModel
 {
     public string Name { get; }
+    public string LogoUrl { get; }
     public string AddressLine1 { get; }
     public string AddressLine2 { get; }
     public List<string> Cuisines { get; }
@@ -13,6 +14,7 @@ public class RestaurantCardViewModel
     public RestaurantCardViewModel(Restaurant restaurant)
     {
         Name = restaurant.Name;
+        LogoUrl = restaurant.LogoUrl;
         AddressLine1 = restaurant.Address.FirstLine.Replace("\n", " ").Replace("\r", "").Trim();
         AddressLine2 = $"{restaurant.Address.City}, {restaurant.Address.PostalCode}";
         Cuisines = restaurant.Cuisines;
