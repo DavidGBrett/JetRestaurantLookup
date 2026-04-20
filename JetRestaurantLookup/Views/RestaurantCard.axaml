@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:JetRestaurantLookup.ViewModels"
+             x:Class="JetRestaurantLookup.Views.RestaurantCard"
+             x:DataType="vm:RestaurantCardViewModel">
+
+    <StackPanel Orientation="Vertical" Spacing="2" Margin="4">
+
+        <TextBlock Text="{Binding Name}" FontWeight="Bold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+
+        <TextBlock Text="{Binding AddressLine1}" TextWrapping="Wrap"/>
+        <TextBlock Text="{Binding AddressLine2}" TextWrapping="Wrap"/>
+
+        <ItemsControl ItemsSource="{Binding Cuisines}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Margin="0,0,6,0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="{Binding RatingSummary}" />
+
+    </StackPanel>
+
+</UserControl>

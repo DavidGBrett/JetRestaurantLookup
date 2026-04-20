@@ -1,0 +1,21 @@
+using JetRestaurantLookup.Core.Models;
+
+namespace JetRestaurantLookup.ViewModels;
+
+public class RestaurantCardViewModel
+{
+    public string Name { get; }
+    public string AddressLine1 { get; }
+    public string AddressLine2 { get; }
+    public List<string> Cuisines { get; }
+    public string RatingSummary { get; }
+
+    public RestaurantCardViewModel(Restaurant restaurant)
+    {
+        Name = restaurant.Name;
+        AddressLine1 = restaurant.Address.FirstLine.Replace("\n", " ").Replace("\r", "").Trim();
+        AddressLine2 = $"{restaurant.Address.City}, {restaurant.Address.PostalCode}";
+        Cuisines = restaurant.Cuisines;
+        RatingSummary = $"★ {restaurant.Rating.StarRating:F1} ({restaurant.Rating.Count} ratings)";
+    }
+}
