@@ -35,21 +35,21 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task OneFilterSelected_ShowsOnlyMatchingRestaurants()
+    public async Task OneCategoryFilterSelected_ShowsOnlyMatchingRestaurants()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Italian"),
             MakeRestaurant("2", "Chinese")));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.AvailableCuisines.First(c => c.Name == "Italian").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
 
         Assert.Single(vm.Restaurants);
         Assert.Equal("Restaurant 1", vm.Restaurants[0].Name);
     }
 
     [Fact]
-    public async Task TwoFiltersSelected_AND_ShowsOnlyRestaurantsWithBoth()
+    public async Task TwoCategoryFiltersSelected_AND_ShowsOnlyRestaurantsWithBoth()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Italian", "Pizza"),
@@ -57,22 +57,22 @@ public class MainWindowViewModelTests
             MakeRestaurant("3", "Pizza")));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.AvailableCuisines.First(c => c.Name == "Italian").IsSelected = true;
-        vm.AvailableCuisines.First(c => c.Name == "Pizza").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == "Pizza").IsSelected = true;
 
         Assert.Single(vm.Restaurants);
         Assert.Equal("Restaurant 1", vm.Restaurants[0].Name);
     }
 
     [Fact]
-    public async Task DeselectingFilter_RestoresRestaurants()
+    public async Task DeselectingCategoryFilter_RestoresRestaurants()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Italian"),
             MakeRestaurant("2", "Chinese")));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        var italianFilter = vm.AvailableCuisines.First(c => c.Name == "Italian");
+        var italianFilter = vm.OtherCategories.First(c => c.Name == "Italian");
         italianFilter.IsSelected = true;
         Assert.Single(vm.Restaurants);
 
@@ -82,19 +82,38 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task NewSearch_ResetsFiltersAndShowsNewCuisines()
+    public async Task NewSearch_ResetsFiltersAndShowsNewCategories()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Italian"),
             MakeRestaurant("2", "Chinese")));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.AvailableCuisines.First(c => c.Name == "Italian").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
         Assert.Single(vm.Restaurants);
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
         Assert.Equal(2, vm.Restaurants.Count);
-        Assert.All(vm.AvailableCuisines, c => Assert.False(c.IsSelected));
+        Assert.All(vm.OtherCategories, c => Assert.False(c.IsSelected));
+    }
+
+    [Fact]
+    public async Task Load_SeparatesOfferCategoriesFromOtherCategories()
+    {
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            MakeRestaurant("1", "Pizza", "Deals"),
+            MakeRestaurant("2", "Italian", "Freebies")));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        Assert.Contains(vm.OfferCategories, c => c.Name == "Deals");
+        Assert.Contains(vm.OfferCategories, c => c.Name == "Freebies");
+        Assert.Contains(vm.OtherCategories, c => c.Name == "Pizza");
+        Assert.Contains(vm.OtherCategories, c => c.Name == "Italian");
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Deals");
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Freebies");
+        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Pizza");
+        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Italian");
     }
 }

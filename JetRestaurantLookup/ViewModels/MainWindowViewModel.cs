@@ -27,28 +27,34 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial ObservableCollection<RestaurantCardViewModel> Restaurants { get; set; } = [];
 
     [ObservableProperty]
-    public partial ObservableCollection<CuisineFilterViewModel> AvailableCuisines { get; set; } = [];
+    public partial ObservableCollection<CategoryFilterViewModel> OfferCategories { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<CategoryFilterViewModel> OtherCategories { get; set; } = [];
+
+    private static readonly HashSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps"];
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
-    private void OnCuisineFilterChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnCategoryFilterChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(CuisineFilterViewModel.IsSelected))
+        if (e.PropertyName == nameof(CategoryFilterViewModel.IsSelected))
             ApplyFilter();
     }
 
     private void ApplyFilter()
     {
-        var selectedCuisines = AvailableCuisines.Where(c => c.IsSelected).Select(c => c.Name).ToList();
+        var selected = OfferCategories.Concat(OtherCategories)
+            .Where(c => c.IsSelected).Select(c => c.Name).ToList();
 
-        if (selectedCuisines.Count == 0)
+        if (selected.Count == 0)
         {
             Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
             return;
         }
 
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(
-            _allRestaurants.Where(r => selectedCuisines.All(cuisine => r.Cuisines.Contains(cuisine))));
+            _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))));
     }
 
     [RelayCommand]
@@ -65,12 +71,18 @@ public partial class MainWindowViewModel : ViewModelBase
         _allRestaurants = restaurants.Select(r => new RestaurantCardViewModel(r)).ToList();
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
 
-        AvailableCuisines = new ObservableCollection<CuisineFilterViewModel>(
-            restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c)
-                       .Select(name => new CuisineFilterViewModel { Name = name }));
+        var allCategoryNames = restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c).ToList();
 
-        foreach (var cuisine in AvailableCuisines)
-            cuisine.PropertyChanged += OnCuisineFilterChanged;
+        OfferCategories = new ObservableCollection<CategoryFilterViewModel>(
+            allCategoryNames.Where(n => _offerNames.Contains(n))
+                           .Select(name => new CategoryFilterViewModel { Name = name }));
+
+        OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
+            allCategoryNames.Where(n => !_offerNames.Contains(n))
+                           .Select(name => new CategoryFilterViewModel { Name = name }));
+
+        foreach (var filter in OfferCategories.Concat(OtherCategories))
+            filter.PropertyChanged += OnCategoryFilterChanged;
 
         if (restaurants.Count == 0)
         {
