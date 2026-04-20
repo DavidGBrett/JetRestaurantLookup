@@ -77,20 +77,25 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var allCategoryNames = restaurants.SelectMany(r => r.Cuisines).Distinct().OrderBy(c => c).ToList();
 
+        var previouslySelected = OfferCategories.Concat(DietaryCategories).Concat(OtherCategories)
+            .Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
+
         OfferCategories = new ObservableCollection<CategoryFilterViewModel>(
             allCategoryNames.Where(n => _offerNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name }));
+                           .Select(name => new CategoryFilterViewModel { Name = name, IsSelected = previouslySelected.Contains(name) }));
 
         DietaryCategories = new ObservableCollection<CategoryFilterViewModel>(
             allCategoryNames.Where(n => _dietaryNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name }));
+                           .Select(name => new CategoryFilterViewModel { Name = name, IsSelected = previouslySelected.Contains(name) }));
 
         OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
             allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name }));
+                           .Select(name => new CategoryFilterViewModel { Name = name, IsSelected = previouslySelected.Contains(name) }));
 
         foreach (var filter in OfferCategories.Concat(DietaryCategories).Concat(OtherCategories))
             filter.PropertyChanged += OnCategoryFilterChanged;
+
+        ApplyFilter();
 
         if (restaurants.Count == 0)
         {

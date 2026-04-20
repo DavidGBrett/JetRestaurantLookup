@@ -22,6 +22,19 @@ public class MainWindowViewModelTests
             => Task.FromResult(restaurants.Take(count).ToList());
     }
 
+    private sealed class CallSequenceFakeRestaurantService(
+        IEnumerable<Restaurant> firstCall,
+        IEnumerable<Restaurant> secondCall) : IRestaurantService
+    {
+        private int _callCount;
+
+        public Task<List<Restaurant>> GetRestaurantsAsync(string postcode, int count = 10)
+        {
+            _callCount++;
+            return Task.FromResult((_callCount == 1 ? firstCall : secondCall).Take(count).ToList());
+        }
+    }
+
     [Fact]
     public async Task NoFiltersSelected_ShowsAllRestaurants()
     {
@@ -82,7 +95,7 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task NewSearch_ResetsFiltersAndShowsNewCategories()
+    public async Task NewSearch_PersistsSelectedFiltersWhenCategoryStillPresent()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Italian"),
@@ -94,8 +107,8 @@ public class MainWindowViewModelTests
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
-        Assert.Equal(2, vm.Restaurants.Count);
-        Assert.All(vm.OtherCategories, c => Assert.False(c.IsSelected));
+        Assert.True(vm.OtherCategories.First(c => c.Name == "Italian").IsSelected);
+        Assert.Single(vm.Restaurants); // filter still active
     }
 
     [Fact]
@@ -134,5 +147,25 @@ public class MainWindowViewModelTests
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Halal");
         Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Pizza");
         Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Italian");
+    }
+
+    [Fact]
+    public async Task NewSearch_RestoresSelectedFiltersIfStillPresent()
+    {
+        var firstResults = new[] { MakeRestaurant("1", "Pizza", "Vegan") };
+        var secondResults = new[] { MakeRestaurant("2", "Burger", "Vegan") };
+        var vm = new MainWindowViewModel(new CallSequenceFakeRestaurantService(firstResults, secondResults));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+        vm.DietaryCategories.Single(c => c.Name == "Vegan").IsSelected = true;
+
+        vm.Postcode = "SW1A1AA";
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        Assert.True(vm.DietaryCategories.Single(c => c.Name == "Vegan").IsSelected);
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Pizza"); // not in new results
+        // Only "Vegan" filter still selected; "Burger" restaurant has Vegan so it shows
+        Assert.Contains(vm.Restaurants, r => r.Name == "Restaurant 2");
     }
 }
