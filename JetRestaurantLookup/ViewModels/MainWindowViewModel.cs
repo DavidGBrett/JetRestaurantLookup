@@ -30,9 +30,13 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial ObservableCollection<CategoryFilterViewModel> OfferCategories { get; set; } = [];
 
     [ObservableProperty]
+    public partial ObservableCollection<CategoryFilterViewModel> DietaryCategories { get; set; } = [];
+
+    [ObservableProperty]
     public partial ObservableCollection<CategoryFilterViewModel> OtherCategories { get; set; } = [];
 
     private static readonly HashSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps"];
+    private static readonly HashSet<string> _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
@@ -44,7 +48,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void ApplyFilter()
     {
-        var selected = OfferCategories.Concat(OtherCategories)
+        var selected = OfferCategories.Concat(DietaryCategories).Concat(OtherCategories)
             .Where(c => c.IsSelected).Select(c => c.Name).ToList();
 
         if (selected.Count == 0)
@@ -77,11 +81,15 @@ public partial class MainWindowViewModel : ViewModelBase
             allCategoryNames.Where(n => _offerNames.Contains(n))
                            .Select(name => new CategoryFilterViewModel { Name = name }));
 
-        OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
-            allCategoryNames.Where(n => !_offerNames.Contains(n))
+        DietaryCategories = new ObservableCollection<CategoryFilterViewModel>(
+            allCategoryNames.Where(n => _dietaryNames.Contains(n))
                            .Select(name => new CategoryFilterViewModel { Name = name }));
 
-        foreach (var filter in OfferCategories.Concat(OtherCategories))
+        OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
+            allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n))
+                           .Select(name => new CategoryFilterViewModel { Name = name }));
+
+        foreach (var filter in OfferCategories.Concat(DietaryCategories).Concat(OtherCategories))
             filter.PropertyChanged += OnCategoryFilterChanged;
 
         if (restaurants.Count == 0)

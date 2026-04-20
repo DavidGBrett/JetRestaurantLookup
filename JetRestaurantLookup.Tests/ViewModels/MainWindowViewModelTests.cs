@@ -116,4 +116,23 @@ public class MainWindowViewModelTests
         Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Pizza");
         Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Italian");
     }
+
+    [Fact]
+    public async Task Load_SeparatesDietaryCategoriesFromOtherCategories()
+    {
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            MakeRestaurant("1", "Pizza", "Vegan"),
+            MakeRestaurant("2", "Italian", "Halal")));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal");
+        Assert.Contains(vm.OtherCategories, c => c.Name == "Pizza");
+        Assert.Contains(vm.OtherCategories, c => c.Name == "Italian");
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Vegan");
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Halal");
+        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Pizza");
+        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Italian");
+    }
 }

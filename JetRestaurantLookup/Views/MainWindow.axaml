@@ -45,6 +45,16 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    <TextBlock Text="Dietary" FontWeight="SemiBold" Margin="0,8,0,4" />
+                    <ItemsControl ItemsSource="{Binding DietaryCategories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CategoryFilterViewModel">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          Content="{Binding Name}"
+                                          FontSize="13" Padding="2,2" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                     <TextBlock Text="Other Categories" FontWeight="SemiBold" Margin="0,8,0,4" />
                     <ItemsControl ItemsSource="{Binding OtherCategories}">
                         <ItemsControl.ItemTemplate>
