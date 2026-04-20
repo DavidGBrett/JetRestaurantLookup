@@ -30,6 +30,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
     {
+        if (string.IsNullOrWhiteSpace(Postcode))
+        {
+            StatusMessage = "Enter a postcode to search.";
+            return;
+        }
+
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
         Restaurants = new ObservableCollection<Restaurant>(restaurants);
