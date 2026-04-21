@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JetRestaurantLookup.Core\JetRestaurantLookup.Core.csproj" />
+    <ProjectReference Include="..\JetRestaurantLookup\JetRestaurantLookup.csproj" />
   </ItemGroup>
 
 </Project>

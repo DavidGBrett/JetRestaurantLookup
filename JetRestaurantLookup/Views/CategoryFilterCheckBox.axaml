@@ -1,0 +1,13 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:JetRestaurantLookup.ViewModels"
+    x:Class="JetRestaurantLookup.Views.CategoryFilterCheckBox"
+    x:DataType="vm:CategoryFilterViewModel">
+    <CheckBox
+        IsChecked="{Binding IsSelected, Mode=TwoWay}"
+        Content="{Binding DisplayName}"
+        IsVisible="{Binding IsVisible, Mode=OneWay, FallbackValue=True}" 
+        FontSize="13" 
+        Padding="6,0,0,0"/>
+</UserControl>
