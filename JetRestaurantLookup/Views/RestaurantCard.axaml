@@ -19,12 +19,12 @@
             </Border>
 
             <Grid Grid.Column="1" Grid.Row="0" ColumnDefinitions="*,Auto" Margin="10,0,0,0">
-                <TextBlock Grid.Column="0"
+                <SelectableTextBlock Grid.Column="0"
                            Text="{Binding Name}"
                            FontSize="18" FontWeight="Bold"
                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                            VerticalAlignment="Top" />
-                <TextBlock Grid.Column="1"
+                <SelectableTextBlock Grid.Column="1"
                            Text="{Binding RatingSummary}"
                            FontSize="12" FontWeight="SemiBold"
                            VerticalAlignment="Top"
@@ -40,16 +40,14 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Background="Gray" CornerRadius="10" Padding="6,2" Margin="0,0,4,2">
-                            <TextBlock Text="{Binding}" FontSize="12" Foreground="White" />
+                            <SelectableTextBlock Text="{Binding}" FontSize="12" Foreground="White" />
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
 
-        <TextBlock Text="{Binding AddressLine1}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
-        <TextBlock Text="{Binding AddressLine2}" FontSize="12" TextWrapping="Wrap" />
-
+        <SelectableTextBlock  Text="{Binding Address}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
     </StackPanel>
 
 </UserControl>
