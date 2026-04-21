@@ -41,7 +41,7 @@
                                 <CheckBox IsVisible="{Binding IsVisible}"
                                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           Content="{Binding DisplayName}"
-                                          FontSize="13" Padding="2,2" />
+                                          FontSize="13" Padding="6,0,0,0" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -51,7 +51,7 @@
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
                                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           Content="{Binding DisplayName}"
-                                          FontSize="13" Padding="2,2" />
+                                          FontSize="13" Padding="6,0,0,0" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -62,7 +62,7 @@
                                 <CheckBox IsVisible="{Binding IsVisible}"
                                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           Content="{Binding DisplayName}"
-                                          FontSize="13" Padding="2,2" />
+                                          FontSize="13" Padding="6,0,0,0" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
