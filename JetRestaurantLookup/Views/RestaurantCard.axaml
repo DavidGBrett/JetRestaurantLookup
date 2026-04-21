@@ -8,7 +8,7 @@
     <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="8" Margin="4">
         <StackPanel Orientation="Vertical" Spacing="2" Margin="12,10">
 
-        <Grid ColumnDefinitions="64,*" RowDefinitions="Auto,Auto">
+        <Grid ColumnDefinitions="64,*,92" RowDefinitions="Auto,Auto">
             <Border Grid.Column="0" Grid.RowSpan="2"
                     Width="64" Height="64"
                     CornerRadius="4"
@@ -19,20 +19,14 @@
                 </Border>
             </Border>
 
-            <Grid Grid.Column="1" Grid.Row="0" ColumnDefinitions="*,Auto" Margin="10,0,0,0">
-                <SelectableTextBlock Grid.Column="0"
-                           Text="{Binding Name}"
-                           FontSize="18" FontWeight="Bold"
-                           TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                           VerticalAlignment="Top" />
-                <SelectableTextBlock Grid.Column="1"
-                           Text="{Binding RatingSummary}"
-                           FontSize="12" FontWeight="SemiBold"
-                           VerticalAlignment="Top"
-                           Margin="8,0,0,0" />
-            </Grid>
+            <SelectableTextBlock Grid.Column="1" Grid.Row="0"
+                       Text="{Binding Name}"
+                       FontSize="18" FontWeight="Bold"
+                       TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                       Margin="10,0,8,0"
+                       VerticalAlignment="Top" />
 
-            <ItemsControl Grid.Column="1" Grid.Row="1" Margin="10,2,0,0" ItemsSource="{Binding Cuisines}">
+            <ItemsControl Grid.Column="1" Grid.Row="1" Margin="10,2,8,0" ItemsSource="{Binding Cuisines}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -46,6 +40,17 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <StackPanel Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <SelectableTextBlock Text="{Binding RatingScore}"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="{DynamicResource SystemControlHighlightAccentBrush}"
+                           HorizontalAlignment="Center" />
+                <SelectableTextBlock Text="{Binding RatingCountText}"
+                           FontSize="13" FontWeight="Normal"
+                           HorizontalAlignment="Center"
+                           Margin="0,2,0,0" />
+            </StackPanel>
         </Grid>
 
         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
