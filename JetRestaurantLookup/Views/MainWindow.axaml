@@ -39,7 +39,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
                                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                          Content="{Binding Name}"
+                                          Content="{Binding DisplayName}"
                                           FontSize="13" Padding="2,2" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -49,7 +49,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
                                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                          Content="{Binding Name}"
+                                          Content="{Binding DisplayName}"
                                           FontSize="13" Padding="2,2" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -59,7 +59,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
                                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                          Content="{Binding Name}"
+                                          Content="{Binding DisplayName}"
                                           FontSize="13" Padding="2,2" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
