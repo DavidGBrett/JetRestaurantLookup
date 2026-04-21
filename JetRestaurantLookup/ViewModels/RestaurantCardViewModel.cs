@@ -12,6 +12,7 @@ public class RestaurantCardViewModel
     public List<string> Cuisines { get; }
     public string RatingSummary { get; }
     public IRelayCommand OpenGoogleMapsCommand { get; }
+    public IRelayCommand OpenJustEatCommand { get; }
 
     public RestaurantCardViewModel(Restaurant restaurant)
     {
@@ -29,6 +30,14 @@ public class RestaurantCardViewModel
             Process.Start(new ProcessStartInfo
             {
                 FileName = $"https://www.google.com/maps/search/?api=1&query={mapsQuery}",
+                UseShellExecute = true
+            }));
+
+        var uniqueName = restaurant.UniqueName;
+        OpenJustEatCommand = new RelayCommand(() =>
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = $"https://www.just-eat.co.uk/restaurants-{uniqueName}/menu",
                 UseShellExecute = true
             }));
     }
