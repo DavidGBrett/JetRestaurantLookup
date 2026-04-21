@@ -3,6 +3,7 @@ namespace JetRestaurantLookup.Core.Models
     public record Restaurant
     {
         public required string Id {get; init;}
+        public required string UniqueName { get; init; }
         public required string Name {get; init;}
         public required string LogoUrl { get; init; }
         public required Address Address {get; init;}

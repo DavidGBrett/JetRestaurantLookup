@@ -8,6 +8,7 @@ namespace JetRestaurantLookup.Core.Mappers
         public static Restaurant ToModel(RestaurantDto dto) => new()
         {
             Id = dto.Id,
+            UniqueName = dto.UniqueName,
             Name = dto.Name,
             LogoUrl = dto.LogoUrl,
             Address = AddressMapper.ToModel(dto.Address),
