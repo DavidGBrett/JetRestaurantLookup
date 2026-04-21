@@ -20,20 +20,23 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="8">
-            <TextBlock Text="Postcode" FontWeight="SemiBold" VerticalAlignment="Center" />
-            <TextBox Text="{Binding Postcode, Mode=TwoWay}"
-                     Width="160"
-                     MaxWidth="160"
-                     PlaceholderText="e.g. EC4M 7RF"
-                     ToolTip.Tip="Enter a UK postcode to find nearby restaurants">
-                <TextBox.KeyBindings>
-                    <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
-                </TextBox.KeyBindings>
-            </TextBox>
-        </StackPanel>
+        <Border Grid.Row="0" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="8">
+                <TextBlock Text="Postcode" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Postcode, Mode=TwoWay}"
+                        Width="160"
+                        MaxWidth="160"
+                        PlaceholderText="e.g. EC4M 7RF"
+                        ToolTip.Tip="Enter a UK postcode to find nearby restaurants">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
+                    </TextBox.KeyBindings>
+                </TextBox>
+            </StackPanel>
+        </Border>
         <Grid Grid.Row="1" ColumnDefinitions="220,*">
             <ScrollViewer Grid.Column="0"
+                          Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                           BorderBrush="Gray" BorderThickness="0,0,1,0">
                 <StackPanel Spacing="4" Margin="8">
                     <TextBlock Text="Offers" FontWeight="SemiBold" Margin="0,0,0,4" />
