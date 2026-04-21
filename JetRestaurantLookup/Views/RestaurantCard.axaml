@@ -47,9 +47,7 @@
             </ItemsControl>
         </Grid>
 
-        <SelectableTextBlock  Text="{Binding AddressLine1}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
-        <SelectableTextBlock  Text="{Binding AddressLine2}" FontSize="12" TextWrapping="Wrap" />
-
+        <SelectableTextBlock  Text="{Binding Address}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
     </StackPanel>
 
 </UserControl>
