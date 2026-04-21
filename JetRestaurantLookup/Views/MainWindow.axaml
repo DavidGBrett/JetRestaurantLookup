@@ -63,23 +63,24 @@
                 </StackPanel>
             </ScrollViewer>
             <Grid Grid.Column="1">
-                <ListBox ItemsSource="{Binding Restaurants}"
-                         IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNullOrEmpty}}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,10">
-                                <!-- Hacky but it works -->
-                                <!-- Makes the Cards stretch up to 800px and be centered -->
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="9999*" MaxWidth="800" />  
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <views:RestaurantCard Grid.Column="1" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <ScrollViewer IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNullOrEmpty}}">
+                    <ItemsControl ItemsSource="{Binding Restaurants}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,10">
+                                    <!-- Hacky but it works -->
+                                    <!-- Makes the Cards stretch up to 800px and be centered -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="9999*" MaxWidth="800" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <views:RestaurantCard Grid.Column="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
                 <TextBlock Text="{Binding StatusMessage}"
                            IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                            HorizontalAlignment="Center"
