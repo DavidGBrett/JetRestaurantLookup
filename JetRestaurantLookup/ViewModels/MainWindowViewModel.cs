@@ -103,8 +103,19 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var previouslySelected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
 
+        var availableOfferCategoryNames = new List<string>();
+        var availableOtherCategoryNames = new List<string>();
+
+        foreach (var name in allCategoryNames)
+        {
+            if (_offerNames.Contains(name))
+                availableOfferCategoryNames.Add(name);
+            else if (!_dietaryNames.Contains(name))
+                availableOtherCategoryNames.Add(name);
+        }
+
         OfferCategories = CreateCategoryFilterGroup(
-            allCategoryNames.Where(n => _offerNames.Contains(n)),
+            availableOfferCategoryNames,
             categoryCounts,
             previouslySelected);
 
@@ -115,7 +126,7 @@ public partial class MainWindowViewModel : ViewModelBase
             alwaysVisible: true);
 
         OtherCategories = CreateCategoryFilterGroup(
-            allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n)),
+            availableOtherCategoryNames,
             categoryCounts,
             previouslySelected);
 
