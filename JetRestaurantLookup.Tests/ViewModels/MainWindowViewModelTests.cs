@@ -139,14 +139,28 @@ public class MainWindowViewModelTests
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan");
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan" && c.Count == 1); // since dietary categories always show up
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal" && c.Count == 1); // we check instead that the count is 1 not 0
         Assert.Contains(vm.OtherCategories, c => c.Name == "Pizza");
         Assert.Contains(vm.OtherCategories, c => c.Name == "Italian");
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Vegan");
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Halal");
         Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Pizza");
         Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Italian");
+    }
+
+    [Fact]
+    public async Task Load_DietaryCategoriesAlwaysShowAllCategories()
+    {
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            MakeRestaurant("1", "Pizza")));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegetarian");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Gluten Free");
     }
 
     [Fact]

@@ -36,7 +36,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial ObservableCollection<CategoryFilterViewModel> OtherCategories { get; set; } = [];
 
     private static readonly HashSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps"];
-    private static readonly HashSet<string> _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
+    private static readonly string[] _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
@@ -89,8 +89,8 @@ public partial class MainWindowViewModel : ViewModelBase
                            .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts[name], IsSelected = previouslySelected.Contains(name) }));
 
         DietaryCategories = new ObservableCollection<CategoryFilterViewModel>(
-            allCategoryNames.Where(n => _dietaryNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts[name], IsSelected = previouslySelected.Contains(name) }));
+            _dietaryNames
+                .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts.GetValueOrDefault(name), IsSelected = previouslySelected.Contains(name) }));
 
         OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
             allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n))
