@@ -48,7 +48,12 @@
             </ItemsControl>
         </Grid>
 
-        <SelectableTextBlock  Text="{Binding Address}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" />
+        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+            <SelectableTextBlock Text="{Binding Address}" FontSize="12" TextWrapping="Wrap"
+                                 Width="120" VerticalAlignment="Center" />
+            <Button Content="🌍 Open In Google Maps" Command="{Binding OpenGoogleMapsCommand}"
+                    FontSize="11" Padding="6,3" VerticalAlignment="Center" />
+        </StackPanel>
     </StackPanel>
     </Border>
 
