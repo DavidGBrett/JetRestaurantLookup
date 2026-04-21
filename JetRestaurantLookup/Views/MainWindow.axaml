@@ -67,7 +67,7 @@
                          IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNullOrEmpty}}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid Margin="0,10">
                                 <!-- Hacky but it works -->
                                 <!-- Makes the Cards stretch up to 800px and be centered -->
                                 <Grid.ColumnDefinitions>
