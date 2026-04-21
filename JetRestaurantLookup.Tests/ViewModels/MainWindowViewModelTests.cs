@@ -9,6 +9,7 @@ public class MainWindowViewModelTests
     private static Restaurant MakeRestaurant(string id, params string[] cuisines) => new()
     {
         Id = id,
+        UniqueName = $"restaurant-{id}",
         Name = $"Restaurant {id}",
         LogoUrl = "https://example.com/logo.gif",
         Address = new Address { City = "London", FirstLine = "1 Example Street", PostalCode = "EC1A 1AA" },
