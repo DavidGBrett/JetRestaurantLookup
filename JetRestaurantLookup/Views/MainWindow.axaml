@@ -38,7 +38,8 @@
                     <ItemsControl ItemsSource="{Binding OfferCategories}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                <CheckBox IsVisible="{Binding IsVisible}"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           Content="{Binding DisplayName}"
                                           FontSize="13" Padding="2,2" />
                             </DataTemplate>
@@ -58,7 +59,8 @@
                     <ItemsControl ItemsSource="{Binding OtherCategories}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:CategoryFilterViewModel">
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                <CheckBox IsVisible="{Binding IsVisible}"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           Content="{Binding DisplayName}"
                                           FontSize="13" Padding="2,2" />
                             </DataTemplate>

@@ -51,14 +51,15 @@ public partial class MainWindowViewModel : ViewModelBase
         var selected = OfferCategories.Concat(DietaryCategories).Concat(OtherCategories)
             .Where(c => c.IsSelected).Select(c => c.Name).ToList();
 
-        if (selected.Count == 0)
-        {
-            Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
-            return;
-        }
+        var filtered = selected.Count == 0
+            ? _allRestaurants
+            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
 
-        Restaurants = new ObservableCollection<RestaurantCardViewModel>(
-            _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))));
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
+
+        var counts = filtered.SelectMany(r => r.Cuisines).GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
+        foreach (var filter in OfferCategories.Concat(DietaryCategories).Concat(OtherCategories))
+            filter.Count = counts.GetValueOrDefault(filter.Name);
     }
 
     [RelayCommand]
@@ -90,7 +91,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         DietaryCategories = new ObservableCollection<CategoryFilterViewModel>(
             _dietaryNames
-                .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts.GetValueOrDefault(name), IsSelected = previouslySelected.Contains(name) }));
+                .Select(name => new CategoryFilterViewModel { Name = name, AlwaysVisible = true, Count = categoryCounts.GetValueOrDefault(name), IsSelected = previouslySelected.Contains(name) }));
 
         OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
             allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n))

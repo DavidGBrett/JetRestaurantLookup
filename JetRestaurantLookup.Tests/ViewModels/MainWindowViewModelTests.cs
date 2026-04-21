@@ -150,17 +150,17 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task Load_DietaryCategoriesAlwaysShowAllCategories()
+    public async Task Load_DietaryCategories_AllAppearVisibleEvenWithNoMatches()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
             MakeRestaurant("1", "Pizza")));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan");
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegetarian");
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal");
-        Assert.Contains(vm.DietaryCategories, c => c.Name == "Gluten Free");
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegan"       && c.IsVisible);
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Vegetarian"  && c.IsVisible);
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Halal"       && c.IsVisible);
+        Assert.Contains(vm.DietaryCategories, c => c.Name == "Gluten Free" && c.IsVisible);
     }
 
     [Fact]
@@ -181,5 +181,34 @@ public class MainWindowViewModelTests
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Pizza"); // not in new results
         // Only "Vegan" filter still selected; "Burger" restaurant has Vegan so it shows
         Assert.Contains(vm.Restaurants, r => r.Name == "Restaurant 2");
+    }
+
+    [Fact]
+    public async Task FilterApplied_NonDietaryCategoriesWithZeroMatchesAreHidden()
+    {
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            MakeRestaurant("1", "Pizza", "Deals"),
+            MakeRestaurant("2", "Chinese", "Freebies")));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+
+        Assert.False(vm.OtherCategories.Single(c => c.Name == "Chinese").IsVisible);
+        Assert.False(vm.OfferCategories.Single(c => c.Name == "Freebies").IsVisible);
+        Assert.True(vm.OtherCategories.Single(c => c.Name == "Pizza").IsVisible);
+        Assert.True(vm.OfferCategories.Single(c => c.Name == "Deals").IsVisible);
+    }
+
+    [Fact]
+    public async Task FilterApplied_DietaryCategoryWithZeroMatchesRemainsVisible()
+    {
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            MakeRestaurant("1", "Pizza", "Vegan"),
+            MakeRestaurant("2", "Chinese")));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+
+        Assert.True(vm.DietaryCategories.Single(c => c.Name == "Halal").IsVisible);
     }
 }
