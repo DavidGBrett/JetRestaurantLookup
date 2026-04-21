@@ -40,16 +40,34 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
+
     private void OnCategoryFilterChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(CategoryFilterViewModel.IsSelected))
             ApplyFilter();
     }
 
+    private IEnumerable<CategoryFilterViewModel> GetAllFilters() => OfferCategories.Concat(DietaryCategories).Concat(OtherCategories);
+
+    private static ObservableCollection<CategoryFilterViewModel> CreateCategoryFilterGroup(
+        IEnumerable<string> names,
+        Dictionary<string, int> counts,
+        HashSet<string> selected,
+        bool alwaysVisible = false)
+    {
+        return new ObservableCollection<CategoryFilterViewModel>(
+            names.Select(name => new CategoryFilterViewModel
+            {
+                Name = name,
+                AlwaysVisible = alwaysVisible,
+                Count = counts.GetValueOrDefault(name),
+                IsSelected = selected.Contains(name)
+            }));
+    }
+
     private void ApplyFilter()
     {
-        var selected = OfferCategories.Concat(DietaryCategories).Concat(OtherCategories)
-            .Where(c => c.IsSelected).Select(c => c.Name).ToList();
+        var selected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToList();
 
         var filtered = selected.Count == 0
             ? _allRestaurants
@@ -58,7 +76,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
 
         var counts = filtered.SelectMany(r => r.Cuisines).GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
-        foreach (var filter in OfferCategories.Concat(DietaryCategories).Concat(OtherCategories))
+        foreach (var filter in GetAllFilters())
             filter.Count = counts.GetValueOrDefault(filter.Name);
     }
 
@@ -82,22 +100,25 @@ public partial class MainWindowViewModel : ViewModelBase
             .ToDictionary(g => g.Key, g => g.Count());
         var allCategoryNames = categoryCounts.Keys.OrderBy(c => c).ToList();
 
-        var previouslySelected = OfferCategories.Concat(DietaryCategories).Concat(OtherCategories)
-            .Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
+        var previouslySelected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
 
-        OfferCategories = new ObservableCollection<CategoryFilterViewModel>(
-            allCategoryNames.Where(n => _offerNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts[name], IsSelected = previouslySelected.Contains(name) }));
+        OfferCategories = CreateCategoryFilterGroup(
+            allCategoryNames.Where(n => _offerNames.Contains(n)),
+            categoryCounts,
+            previouslySelected);
 
-        DietaryCategories = new ObservableCollection<CategoryFilterViewModel>(
-            _dietaryNames
-                .Select(name => new CategoryFilterViewModel { Name = name, AlwaysVisible = true, Count = categoryCounts.GetValueOrDefault(name), IsSelected = previouslySelected.Contains(name) }));
+        DietaryCategories = CreateCategoryFilterGroup(
+            _dietaryNames,
+            categoryCounts,
+            previouslySelected,
+            alwaysVisible: true);
 
-        OtherCategories = new ObservableCollection<CategoryFilterViewModel>(
-            allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n))
-                           .Select(name => new CategoryFilterViewModel { Name = name, Count = categoryCounts[name], IsSelected = previouslySelected.Contains(name) }));
+        OtherCategories = CreateCategoryFilterGroup(
+            allCategoryNames.Where(n => !_offerNames.Contains(n) && !_dietaryNames.Contains(n)),
+            categoryCounts,
+            previouslySelected);
 
-        foreach (var filter in OfferCategories.Concat(DietaryCategories).Concat(OtherCategories))
+        foreach (var filter in GetAllFilters())
             filter.PropertyChanged += OnCategoryFilterChanged;
 
         ApplyFilter();
