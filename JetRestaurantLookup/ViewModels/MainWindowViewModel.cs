@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Frozen;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -36,7 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial ObservableCollection<CategoryFilterViewModel> OtherCategories { get; set; } = [];
 
     private static readonly HashSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps"];
-    private static readonly string[] _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
+    private static readonly FrozenSet<string> _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
