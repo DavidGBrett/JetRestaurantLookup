@@ -87,6 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(Postcode))
         {
             StatusMessage = "Enter a postcode to search.";
+            Restaurants = [];
             return;
         }
 

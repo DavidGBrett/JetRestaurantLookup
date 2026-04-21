@@ -18,20 +18,25 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Text="{Binding Postcode, Mode=TwoWay}">
-            <TextBox.KeyBindings>
-                <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
-            </TextBox.KeyBindings>
-        </TextBox>
-        <TextBlock Grid.Row="1"
-                   Text="{Binding StatusMessage}"
-                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                   Margin="4,2" />
-        <Grid Grid.Row="2" ColumnDefinitions="180,*">
+        <Border Grid.Row="0" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="8">
+                <TextBlock Text="Postcode" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Postcode, Mode=TwoWay}"
+                        Width="160"
+                        MaxWidth="160"
+                        PlaceholderText="e.g. EC4M 7RF"
+                        ToolTip.Tip="Enter a UK postcode to find nearby restaurants">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
+                    </TextBox.KeyBindings>
+                </TextBox>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1" ColumnDefinitions="220,*">
             <ScrollViewer Grid.Column="0"
+                          Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                           BorderBrush="Gray" BorderThickness="0,0,1,0">
                 <StackPanel Spacing="4" Margin="8">
                     <TextBlock Text="Offers" FontWeight="SemiBold" Margin="0,0,0,4" />
@@ -60,13 +65,32 @@
                     </ItemsControl>
                 </StackPanel>
             </ScrollViewer>
-            <ListBox Grid.Column="1" ItemsSource="{Binding Restaurants}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <views:RestaurantCard />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Grid Grid.Column="1">
+                <ScrollViewer IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNullOrEmpty}}">
+                    <ItemsControl ItemsSource="{Binding Restaurants}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,10">
+                                    <!-- Hacky but it works -->
+                                    <!-- Makes the Cards stretch up to 800px and be centered -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="9999*" MaxWidth="800" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <views:RestaurantCard Grid.Column="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <TextBlock Text="{Binding StatusMessage}"
+                           IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           Margin="24" />
+            </Grid>
         </Grid>
     </Grid>
 </Window>
