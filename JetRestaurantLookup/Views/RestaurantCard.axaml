@@ -12,7 +12,7 @@
             <Border Grid.Column="0" Grid.RowSpan="2"
                     Width="64" Height="64"
                     CornerRadius="4"
-                    BorderBrush="Gray" BorderThickness="2">
+                    BorderBrush="{DynamicResource SystemControlHighlightAccentBrush}" BorderThickness="2">
                 <Border CornerRadius="4" ClipToBounds="True">
                     <Image Stretch="UniformToFill"
                            asyncImageLoader:ImageLoader.Source="{Binding LogoUrl}" />
@@ -34,8 +34,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="Gray" CornerRadius="10" Padding="6,2" Margin="0,0,4,2">
-                            <SelectableTextBlock Text="{Binding}" FontSize="12" Foreground="White" />
+                        <Border Background="{DynamicResource SystemControlHighlightAccentBrush}" CornerRadius="10" Padding="6,2" Margin="0,0,4,2">
+                            <SelectableTextBlock Text="{Binding}" FontSize="12" Foreground="White" FontWeight="Bold" />
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
