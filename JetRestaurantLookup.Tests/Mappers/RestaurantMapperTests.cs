@@ -8,6 +8,7 @@ public class RestaurantMapperTests
     private static RestaurantDto BuildDto(List<CuisineDto>? cuisines = null) => new()
     {
         Id = "123",
+        UniqueName = "test-restaurant",
         Name = "Test Restaurant",
         LogoUrl = "https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/212716.gif",
         Address = new AddressDto
@@ -33,6 +34,7 @@ public class RestaurantMapperTests
 
         Assert.Equal(dto.Id, model.Id);
         Assert.Equal(dto.Name, model.Name);
+        Assert.Equal(dto.UniqueName, model.UniqueName);
         Assert.Equal(dto.LogoUrl, model.LogoUrl);
     }
 
