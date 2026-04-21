@@ -53,6 +53,8 @@
                                  Width="120" VerticalAlignment="Center" />
             <Button Content="🌍 Open In Google Maps" Command="{Binding OpenGoogleMapsCommand}"
                     FontSize="11" Padding="6,3" VerticalAlignment="Center" />
+            <Button Content="🍕 View on Just Eat" Command="{Binding OpenJustEatCommand}"
+                    FontSize="11" Padding="6,3" VerticalAlignment="Center" />
         </StackPanel>
     </StackPanel>
     </Border>
