@@ -43,6 +43,17 @@ Categorizing cuisines also required some interpretation. The API returns a mix o
 
 For postcode handling, the application takes a flexible approach. User input is normalized and sent to the API rather than being strictly rejected upfront, allowing for potential new or uncommon postcode formats. If no results are returned, the input is then checked against the official UK postcode regex, and the user is prompted to verify it if it appears invalid.
 
+## Future Improvements
+There are several areas where the application could be improved or extended.
+
+The UI could be further refined and polished, with general improvements and additional elements such as icons for cuisines and categories.
+
+Filtering and search could be extended to include searching by restaurant name and filtering by rating.
+
+Location input could be improved beyond manual postcode entry, for example by allowing selection on a map or automatic location detection.
+
+Support for other platforms (e.g. Linux and macOS) could be added, as the application currently targets Windows only.
+
 ## Building from Source
 
 ### Prerequisites
