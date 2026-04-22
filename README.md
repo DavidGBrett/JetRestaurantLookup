@@ -34,6 +34,15 @@ A mapping layer is used to convert API DTOs into domain models. While the models
 
 Some presentation-specific logic (such as filtering and categorization) is handled in the view model, keeping it close to where it is used without introducing unnecessary complexity into the core layer.
 
+## Trade-offs & Challenges
+A key challenge in this project was the lack of clear documentation for the specific API endpoint used. While general documentation exists at [Just Eat UK API Docs](https://uk.api.just-eat.io/docs), it does not, as of now, cover the ``discovery/uk/restaurants/enriched/bypostcode`` endpoint. As a result, the response structure had to be inferred through experimentation.
+
+Based on testing, the required fields (e.g. name, address, rating) appeared consistently. The application is therefore designed around the assumption that this schema is stable and that these fields are always present.
+
+Categorizing cuisines also required some interpretation. The API returns a mix of actual cuisines and tag-like values (e.g. Vegan, Freebies), so these were grouped manually into dietary, offer, and other categories. The "other" category is intentionally used instead of "cuisines" to keep the system flexible, ensuring that any unrecognized or new values are still displayed without being incorrectly labelled. This improves robustness, but relies on a predefined set of known values for the dietary and offer groupings.
+
+For postcode handling, the application takes a flexible approach. User input is normalized and sent to the API rather than being strictly rejected upfront, allowing for potential new or uncommon postcode formats. If no results are returned, the input is then checked against the official UK postcode regex, and the user is prompted to verify it if it appears invalid.
+
 ## Building from Source
 
 ### Prerequisites
