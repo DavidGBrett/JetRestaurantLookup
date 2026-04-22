@@ -10,6 +10,9 @@ public class MainWindowViewModelTests
     private static readonly string offerCategory2    = MainWindowViewModel._offerNames.ElementAt(1);
     private static readonly string dietaryCategory1  = MainWindowViewModel._dietaryNames.ElementAt(0);
     private static readonly string dietaryCategory2  = MainWindowViewModel._dietaryNames.ElementAt(1);
+    private static readonly string otherCategory1    = "Pizza";
+    private static readonly string otherCategory2    = "Italian";
+    private static readonly string otherCategory3    = "Burger";
 
     private static Restaurant MakeRestaurant(string id, params string[] cuisines) => new()
     {
@@ -45,8 +48,8 @@ public class MainWindowViewModelTests
     public async Task NoFiltersSelected_ShowsAllRestaurants()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Italian"),
-            MakeRestaurant("2", "Chinese")));
+            MakeRestaurant("1", otherCategory2),
+            MakeRestaurant("2", otherCategory3)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
@@ -57,11 +60,11 @@ public class MainWindowViewModelTests
     public async Task OneCategoryFilterSelected_ShowsOnlyMatchingRestaurants()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Italian"),
-            MakeRestaurant("2", "Chinese")));
+            MakeRestaurant("1", otherCategory2),
+            MakeRestaurant("2", otherCategory3)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected = true;
 
         Assert.Single(vm.Restaurants);
         Assert.Equal("Restaurant 1", vm.Restaurants[0].Name);
@@ -71,13 +74,13 @@ public class MainWindowViewModelTests
     public async Task TwoCategoryFiltersSelected_AND_ShowsOnlyRestaurantsWithBoth()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Italian", "Pizza"),
-            MakeRestaurant("2", "Italian"),
-            MakeRestaurant("3", "Pizza")));
+            MakeRestaurant("1", otherCategory2, otherCategory1),
+            MakeRestaurant("2", otherCategory2),
+            MakeRestaurant("3", otherCategory1)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
-        vm.OtherCategories.First(c => c.Name == "Pizza").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == otherCategory1).IsSelected = true;
 
         Assert.Single(vm.Restaurants);
         Assert.Equal("Restaurant 1", vm.Restaurants[0].Name);
@@ -87,15 +90,15 @@ public class MainWindowViewModelTests
     public async Task DeselectingCategoryFilter_RestoresRestaurants()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Italian"),
-            MakeRestaurant("2", "Chinese")));
+            MakeRestaurant("1", otherCategory2),
+            MakeRestaurant("2", otherCategory3)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        var italianFilter = vm.OtherCategories.First(c => c.Name == "Italian");
-        italianFilter.IsSelected = true;
+        var categoryFilter = vm.OtherCategories.First(c => c.Name == otherCategory2);
+        categoryFilter.IsSelected = true;
         Assert.Single(vm.Restaurants);
 
-        italianFilter.IsSelected = false;
+        categoryFilter.IsSelected = false;
 
         Assert.Equal(2, vm.Restaurants.Count);
     }
@@ -104,16 +107,16 @@ public class MainWindowViewModelTests
     public async Task NewSearch_PersistsSelectedFiltersWhenCategoryStillPresent()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Italian"),
-            MakeRestaurant("2", "Chinese")));
+            MakeRestaurant("1", otherCategory2),
+            MakeRestaurant("2", otherCategory3)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.First(c => c.Name == "Italian").IsSelected = true;
+        vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected = true;
         Assert.Single(vm.Restaurants);
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
-        Assert.True(vm.OtherCategories.First(c => c.Name == "Italian").IsSelected);
+        Assert.True(vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected);
         Assert.Single(vm.Restaurants); // filter still active
     }
 
@@ -121,48 +124,48 @@ public class MainWindowViewModelTests
     public async Task Load_SeparatesOfferCategoriesFromOtherCategories()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Pizza", offerCategory1),
-            MakeRestaurant("2", "Italian", offerCategory2)));
+            MakeRestaurant("1", otherCategory1, offerCategory1),
+            MakeRestaurant("2", otherCategory2, offerCategory2)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
         Assert.Contains(vm.OfferCategories, c => c.Name == offerCategory1);
         Assert.Contains(vm.OfferCategories, c => c.Name == offerCategory2);
 
-        Assert.Contains(vm.OtherCategories, c => c.Name == "Pizza");
-        Assert.Contains(vm.OtherCategories, c => c.Name == "Italian");
+        Assert.Contains(vm.OtherCategories, c => c.Name == otherCategory1);
+        Assert.Contains(vm.OtherCategories, c => c.Name == otherCategory2);
 
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == offerCategory1);
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == offerCategory2);
-        
-        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Pizza");
-        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == "Italian");
+
+        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == otherCategory1);
+        Assert.DoesNotContain(vm.OfferCategories, c => c.Name == otherCategory2);
     }
 
     [Fact]
     public async Task Load_SeparatesDietaryCategoriesFromOtherCategories()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Pizza", dietaryCategory1),
-            MakeRestaurant("2", "Italian", dietaryCategory2)));
+            MakeRestaurant("1", otherCategory1, dietaryCategory1),
+            MakeRestaurant("2", otherCategory2, dietaryCategory2)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
         Assert.Contains(vm.DietaryCategories, c => c.Name == dietaryCategory1 && c.Count == 1); // since dietary categories always show up
         Assert.Contains(vm.DietaryCategories, c => c.Name == dietaryCategory2 && c.Count == 1); // we check instead that the count is 1 not 0
-        Assert.Contains(vm.OtherCategories, c => c.Name == "Pizza");
-        Assert.Contains(vm.OtherCategories, c => c.Name == "Italian");
+        Assert.Contains(vm.OtherCategories, c => c.Name == otherCategory1);
+        Assert.Contains(vm.OtherCategories, c => c.Name == otherCategory2);
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == dietaryCategory1);
         Assert.DoesNotContain(vm.OtherCategories, c => c.Name == dietaryCategory2);
-        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Pizza");
-        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == "Italian");
+        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == otherCategory1);
+        Assert.DoesNotContain(vm.DietaryCategories, c => c.Name == otherCategory2);
     }
 
     [Fact]
     public async Task Load_DietaryCategories_AllAppearVisibleEvenWithNoMatches()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Pizza")));
+            MakeRestaurant("1", otherCategory1)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
@@ -173,39 +176,41 @@ public class MainWindowViewModelTests
     [Fact]
     public async Task NewSearch_RestoresSelectedFiltersIfStillPresent()
     {
-        var firstResults = new[] { MakeRestaurant("1", "Pizza", dietaryCategory1) };
-        var secondResults = new[] { MakeRestaurant("2", "Burger", dietaryCategory1) };
+        var firstResults = new[] { MakeRestaurant("1", otherCategory1, dietaryCategory1) };
+        var secondResults = new[] { MakeRestaurant("2", otherCategory3, dietaryCategory1) };
         var vm = new MainWindowViewModel(new CallSequenceFakeRestaurantService(firstResults, secondResults));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+        vm.OtherCategories.Single(c => c.Name == otherCategory1).IsSelected = true;
         vm.DietaryCategories.Single(c => c.Name == dietaryCategory1).IsSelected = true;
 
         vm.Postcode = "SW1A1AA";
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
         Assert.True(vm.DietaryCategories.Single(c => c.Name == dietaryCategory1).IsSelected);
-        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == "Pizza"); // not in new results
-        // Only dietary filter still selected; "Burger" restaurant has it so it shows
+        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == otherCategory1); // not in new results
+        // Only dietary filter still selected; Restaurant 2 has it so it shows
         Assert.Contains(vm.Restaurants, r => r.Name == "Restaurant 2");
     }
 
     [Fact]
     public async Task FilterApplied_NonDietaryCategoriesWithZeroMatchesAreHidden()
     {
-        var matchingOfferCategory = offerCategory1;
+        var matchingOfferCategory    = offerCategory1;
         var nonMatchingOfferCategory = offerCategory2;
+        var selectedOtherCategory    = otherCategory1;
+        var hiddenOtherCategory      = otherCategory3;
 
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Pizza", matchingOfferCategory),
-            MakeRestaurant("2", "Chinese", nonMatchingOfferCategory)));
+            MakeRestaurant("1", selectedOtherCategory, matchingOfferCategory),
+            MakeRestaurant("2", hiddenOtherCategory, nonMatchingOfferCategory)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+        vm.OtherCategories.Single(c => c.Name == selectedOtherCategory).IsSelected = true;
 
-        Assert.False(vm.OtherCategories.Single(c => c.Name == "Chinese").IsVisible);
+        Assert.False(vm.OtherCategories.Single(c => c.Name == hiddenOtherCategory).IsVisible);
         Assert.False(vm.OfferCategories.Single(c => c.Name == nonMatchingOfferCategory).IsVisible);
-        Assert.True(vm.OtherCategories.Single(c => c.Name == "Pizza").IsVisible);
+        Assert.True(vm.OtherCategories.Single(c => c.Name == selectedOtherCategory).IsVisible);
         Assert.True(vm.OfferCategories.Single(c => c.Name == matchingOfferCategory).IsVisible);
     }
 
@@ -216,11 +221,11 @@ public class MainWindowViewModelTests
         var absentDietaryCategory  = dietaryCategory2;
 
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", "Pizza", presentDietaryCategory),
-            MakeRestaurant("2", "Chinese")));
+            MakeRestaurant("1", otherCategory1, presentDietaryCategory),
+            MakeRestaurant("2", otherCategory3)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.Single(c => c.Name == "Pizza").IsSelected = true;
+        vm.OtherCategories.Single(c => c.Name == otherCategory1).IsSelected = true;
 
         Assert.True(vm.DietaryCategories.Single(c => c.Name == absentDietaryCategory).IsVisible);
     }
