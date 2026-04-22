@@ -10,10 +10,11 @@ A coding assignment for the Early Careers Software Engineering Program at Just E
 ## Table of Contents
 - [Features](#features)
 - [UI](#ui)
+- [Building from Source](#building-from-source)
 - [Design & Architecture](#design--architecture)
 - [Challenges & Assumptions](#challenges--assumptions)
 - [Future Improvements](#future-improvements)
-- [Building from Source](#building-from-source)
+
 
 ## Features
 - View the name, address & rating of 10 restaurants near any uk postcode.
@@ -26,6 +27,29 @@ The app's theme automatically matches the user's system theme.
 ![Dark Theme UI](Assets/dark-ui-example.png)
 ### Light Theme
 ![Light Theme UI](Assets/light-ui-example.png)
+
+## Building from Source
+
+### Prerequisites
+**.NET 10 SDK** is required to build, run, and test this project from source.
+- **Download:** [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- **Verify installation:**
+  ```bash
+  dotnet --version
+  ```
+  Should show 10.0.xxx or higher.
+
+### Commands
+Run these in the terminal from the repository root
+
+| Task | Command |
+|------|---------|
+| **Build** | `dotnet build` |
+| **Run** | `dotnet run --project JetRestaurantLookup` |
+| **Run tests** | `dotnet test` |
+
+### Note
+This project has only been tested on Windows
 
 ## Design & Architecture
 The solution is split into three projects to keep concerns separated:
@@ -61,26 +85,3 @@ Filtering and search could be extended to include searching by restaurant name a
 Location input could be improved beyond manual postcode entry, for example by allowing selection on a map or automatic location detection.
 
 Support for other platforms (e.g. Linux and macOS) could be added, as the application currently targets Windows only.
-
-## Building from Source
-
-### Prerequisites
-**.NET 10 SDK** is required to build, run, and test this project from source.
-- **Download:** [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
-- **Verify installation:**
-  ```bash
-  dotnet --version
-  ```
-  Should show 10.0.xxx or higher.
-
-### Commands
-Run these in the terminal from the repository root
-
-| Task | Command |
-|------|---------|
-| **Build** | `dotnet build` |
-| **Run** | `dotnet run --project JetRestaurantLookup` |
-| **Run tests** | `dotnet test` |
-
-### Note
-This project has only been tested on Windows
