@@ -176,21 +176,41 @@ public class MainWindowViewModelTests
     [Fact]
     public async Task NewSearch_RestoresSelectedFiltersIfStillPresent()
     {
-        var firstResults = new[] { MakeRestaurant("1", otherCategory1, dietaryCategory1) };
-        var secondResults = new[] { MakeRestaurant("2", otherCategory3, dietaryCategory1) };
+        var categoryInBothResults = otherCategory1;
+        var categoryInFirstResultOnly = otherCategory2;
+        var categoryInSecondResultOnly = otherCategory3;
+
+        // first results
+        var restaurant1 = MakeRestaurant("1", categoryInBothResults, categoryInFirstResultOnly);
+        var firstResults = new[] { restaurant1 };
+
+        // second results
+        var restaurant2 = MakeRestaurant("2", categoryInBothResults, categoryInSecondResultOnly);
+        var restaurant3 = MakeRestaurant("3", categoryInSecondResultOnly);
+        var secondResults = new[] { restaurant2, restaurant3};
+
         var vm = new MainWindowViewModel(new CallSequenceFakeRestaurantService(firstResults, secondResults));
 
+        // load first results
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.Single(c => c.Name == otherCategory1).IsSelected = true;
-        vm.DietaryCategories.Single(c => c.Name == dietaryCategory1).IsSelected = true;
 
+        // we set both of these category filters in the first results
+        vm.OtherCategories.Single(c => c.Name == categoryInBothResults).IsSelected = true;
+        vm.OtherCategories.Single(c => c.Name == categoryInFirstResultOnly).IsSelected = true;
+
+        // load second results
         vm.Postcode = "SW1A1AA";
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
 
-        Assert.True(vm.DietaryCategories.Single(c => c.Name == dietaryCategory1).IsSelected);
-        Assert.DoesNotContain(vm.OtherCategories, c => c.Name == otherCategory1); // not in new results
-        // Only dietary filter still selected; Restaurant 2 has it so it shows
-        Assert.Contains(vm.Restaurants, r => r.Name == "Restaurant 2");
+        // Only the categoryInBothResults should still be selected
+        Assert.True(vm.OtherCategories.Single(c => c.Name == categoryInBothResults).IsSelected);
+
+        // Any others should not be selected
+        Assert.True(vm.OtherCategories.All(c => c.Name == categoryInBothResults || !c.IsSelected));
+        
+        // Only restaurant 2 has categoryInBothResults so it should be the only one not filtered out
+        var unfilteredRestaurant = Assert.Single(vm.Restaurants);
+        Assert.Equal(restaurant2.Name, unfilteredRestaurant.Name);
     }
 
     [Fact]
