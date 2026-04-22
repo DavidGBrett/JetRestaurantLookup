@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using JetRestaurantLookup.Core.Models;
 using JetRestaurantLookup.Core.Services;
 using JetRestaurantLookup.Core.Utilities;
 
@@ -85,6 +86,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task LoadRestaurantsAsync()
     {
         var previouslySelected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
+        
         Restaurants = [];
 
         if (string.IsNullOrWhiteSpace(Postcode))
@@ -95,7 +97,21 @@ public partial class MainWindowViewModel : ViewModelBase
 
         StatusMessage = "Loading...";
 
-        var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
+        List<Restaurant> restaurants;
+        try
+        {
+            restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
+        }
+        catch (HttpRequestException)
+        {
+            StatusMessage = "We couldn't load the restaurants right now. Check your internet connection and try again.";
+            return;
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Something went wrong while loading the restaurants.";
+            return;
+        }
 
         _allRestaurants = restaurants.Select(r => new RestaurantCardViewModel(r)).ToList();
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(_allRestaurants);
