@@ -7,6 +7,14 @@ Search for restaurants near any UK Postcode using the Just Eat API!
 
 A coding assignment for the Early Careers Software Engineering Program at Just Eat Takeaway.
 
+## Table of Contents
+- [Features](#features)
+- [UI](#ui)
+- [Design & Architecture](#design--architecture)
+- [Trade-offs & Challenges](#trade-offs--challenges)
+- [Future Improvements](#future-improvements)
+- [Building from Source](#building-from-source)
+
 ## Features
 - View the name, address & rating of 10 restaurants near any uk postcode.
 - Filter by dietary options (e.g., "Vegan"), special offers (e.g., "Freebies"), and cuisine types (e.g., "Italian").
