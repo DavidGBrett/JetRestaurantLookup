@@ -20,7 +20,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    public partial string Postcode { get; set; } = "EC4M7RF";
+    public partial string Postcode { get; set; } = "EC4M 7RF";
 
     [ObservableProperty]
     public partial string? StatusMessage { get; set; }
