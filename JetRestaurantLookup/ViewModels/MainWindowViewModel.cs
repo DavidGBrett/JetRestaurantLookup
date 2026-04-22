@@ -84,12 +84,16 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadRestaurantsAsync()
     {
+        var previouslySelected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
+        Restaurants = [];
+
         if (string.IsNullOrWhiteSpace(Postcode))
         {
             StatusMessage = "Enter a postcode to search.";
-            Restaurants = [];
             return;
         }
+
+        StatusMessage = "Loading...";
 
         var restaurants = await _restaurantService.GetRestaurantsAsync(Postcode);
 
@@ -101,8 +105,6 @@ public partial class MainWindowViewModel : ViewModelBase
             .GroupBy(c => c)
             .ToDictionary(g => g.Key, g => g.Count());
         var allCategoryNames = categoryCounts.Keys.OrderBy(c => c).ToList();
-
-        var previouslySelected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToHashSet();
 
         var availableOfferCategoryNames = new List<string>();
         var availableOtherCategoryNames = new List<string>();
