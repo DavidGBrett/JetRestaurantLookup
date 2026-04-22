@@ -10,6 +10,7 @@ A coding assignment for the Early Careers Software Engineering Program at Just E
 ## Table of Contents
 - [Features](#features)
 - [UI](#ui)
+- [Downloads](#downloads)
 - [Building from Source](#building-from-source)
 - [Design & Architecture](#design--architecture)
 - [Challenges & Assumptions](#challenges--assumptions)
@@ -27,6 +28,13 @@ The app's theme automatically matches the user's system theme.
 ![Dark Theme UI](Assets/dark-ui-example.png)
 ### Light Theme
 ![Light Theme UI](Assets/light-ui-example.png)
+
+## Downloads
+Downloads are available on the [latest release page](https://github.com/DavidGBrett/JetRestaurantLookup/releases/latest). We currently provide Windows releases only.
+
+Each release includes JetRestaurantLookup.exe as a self-contained single-file executable with the runtime and required dependencies bundled.
+
+Because the app is unsigned, Windows may show a warning. Click **More info**, then **Run anyway**.
 
 ## Building from Source
 
