@@ -198,23 +198,36 @@ public class MainWindowViewModelTests
 
     [Fact]
     public async Task FilterApplied_NonDietaryCategoriesWithZeroMatchesAreHidden()
-    {
-        var matchingOfferCategory    = offerCategory1;
-        var nonMatchingOfferCategory = offerCategory2;
-        var selectedOtherCategory    = otherCategory1;
-        var hiddenOtherCategory      = otherCategory3;
+    {        
+        
+        // matched restaurant
+        var selectedOtherCategory = otherCategory1;
+        var visibleOfferCategory    = offerCategory1;
+        var matchedRestaurant = MakeRestaurant("1", selectedOtherCategory, visibleOfferCategory);
+        
+        // unmatched restaurant
+        var unselectedOtherCategory = otherCategory2;
+        var hiddenOfferCategory    = offerCategory2;
+        var unmatchedRestaurant = MakeRestaurant("2", unselectedOtherCategory, hiddenOfferCategory);
 
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", selectedOtherCategory, matchingOfferCategory),
-            MakeRestaurant("2", hiddenOtherCategory, nonMatchingOfferCategory)));
+            matchedRestaurant,
+            unmatchedRestaurant
+        ));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        // filter only for the matchedRestaurant via selectedOtherCategory
         vm.OtherCategories.Single(c => c.Name == selectedOtherCategory).IsSelected = true;
 
-        Assert.False(vm.OtherCategories.Single(c => c.Name == hiddenOtherCategory).IsVisible);
-        Assert.False(vm.OfferCategories.Single(c => c.Name == nonMatchingOfferCategory).IsVisible);
+        // The categories from matchedRestaurant should still be visible
         Assert.True(vm.OtherCategories.Single(c => c.Name == selectedOtherCategory).IsVisible);
-        Assert.True(vm.OfferCategories.Single(c => c.Name == matchingOfferCategory).IsVisible);
+        Assert.True(vm.OfferCategories.Single(c => c.Name == visibleOfferCategory).IsVisible);
+
+        // The other categories should not be visible, since they are not in the match restaurants, nor are they dietary
+        Assert.False(vm.OtherCategories.Single(c => c.Name == unselectedOtherCategory).IsVisible);
+        Assert.False(vm.OfferCategories.Single(c => c.Name == hiddenOfferCategory).IsVisible);
+        
     }
 
     [Fact]
