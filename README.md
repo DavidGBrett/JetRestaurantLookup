@@ -3,6 +3,7 @@
 </p>
 
 # JET Restaurant Lookup
+Search for restaurants near any UK Postcode using the Just Eat API!
 
 A coding assignment for the Early Careers Software Engineering Program at Just Eat Takeaway.
 
