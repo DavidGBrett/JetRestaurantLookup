@@ -12,6 +12,13 @@ A coding assignment for the Early Careers Software Engineering Program at Just E
 - Filter by dietary options (e.g., "Vegan"), special offers (e.g., "Freebies"), and cuisine types (e.g., "Italian").
 - Open restaurants on Google Maps or [just-eat.co.uk](https://www.just-eat.co.uk)
 
+## UI
+The app's theme automatically matches the user's system theme.
+### Dark Theme
+![Dark Theme UI](Assets/dark-ui-example.png)
+### Light Theme
+![Light Theme UI](Assets/light-ui-example.png)
+
 ## Building from Source
 
 ### Prerequisites
