@@ -19,6 +19,21 @@ The app's theme automatically matches the user's system theme.
 ### Light Theme
 ![Light Theme UI](Assets/light-ui-example.png)
 
+## Design & Architecture
+The solution is split into three projects to keep concerns separated:
+
+- **JetRestaurantLookup** – UI layer (Avalonia views and view models)
+- **JetRestaurantLookup.Core** – core logic (services, models, DTOs, utilities)
+- **JetRestaurantLookup.Tests** – unit tests
+
+The application follows the MVVM pattern, with view models handling state and user interactions while keeping the UI layer lightweight.
+
+External API interaction is encapsulated behind `IRestaurantService`, isolating HTTP and API-specific concerns from the rest of the application. The service depends on an injected `HttpClient`, which allows it to be easily tested using mocked HTTP responses without making real network calls.
+
+A mapping layer is used to convert API DTOs into domain models. While the models are currently very similar to the DTOs, this separation was intentional to avoid coupling the rest of the application to the API response structure and to make future changes easier to accommodate.
+
+Some presentation-specific logic (such as filtering and categorization) is handled in the view model, keeping it close to where it is used without introducing unnecessary complexity into the core layer.
+
 ## Building from Source
 
 ### Prerequisites
