@@ -92,4 +92,4 @@ Filtering and search could be extended to include searching by restaurant name a
 
 Location input could be improved beyond manual postcode entry, for example by allowing selection on a map or automatic location detection.
 
-Support for other platforms (e.g. Linux and macOS) could be added, as the application currently targets Windows only.
+Support for other platforms (e.g. Linux and macOS) could be added. The application is currently only tested on Windows and only a Windows executable is provided in releases.
