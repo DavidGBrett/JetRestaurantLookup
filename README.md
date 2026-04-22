@@ -11,7 +11,7 @@ A coding assignment for the Early Careers Software Engineering Program at Just E
 - [Features](#features)
 - [UI](#ui)
 - [Design & Architecture](#design--architecture)
-- [Trade-offs & Challenges](#trade-offs--challenges)
+- [Challenges & Assumptions](#challenges--assumptions)
 - [Future Improvements](#future-improvements)
 - [Building from Source](#building-from-source)
 
@@ -42,7 +42,7 @@ A mapping layer is used to convert API DTOs into domain models. While the models
 
 Some presentation-specific logic (such as filtering and categorization) is handled in the view model, keeping it close to where it is used without introducing unnecessary complexity into the core layer.
 
-## Trade-offs & Challenges
+## Challenges & Assumptions
 A key challenge in this project was the lack of clear documentation for the specific API endpoint used. While general documentation exists at [Just Eat UK API Docs](https://uk.api.just-eat.io/docs), it does not, as of now, cover the ``discovery/uk/restaurants/enriched/bypostcode`` endpoint. As a result, the response structure had to be inferred through experimentation.
 
 Based on testing, the required fields (e.g. name, address, rating) appeared consistently. The application is therefore designed around the assumption that this schema is stable and that these fields are always present.
