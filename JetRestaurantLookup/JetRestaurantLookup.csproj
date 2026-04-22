@@ -29,4 +29,8 @@
   <ItemGroup>
     <ProjectReference Include="..\JetRestaurantLookup.Core\JetRestaurantLookup.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="JetRestaurantLookup.Tests" />
+  </ItemGroup>
 </Project>

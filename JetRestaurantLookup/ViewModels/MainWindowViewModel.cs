@@ -36,8 +36,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial ObservableCollection<CategoryFilterViewModel> OtherCategories { get; set; } = [];
 
-    private static readonly FrozenSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps", "Cheeky Tuesday"];
-    private static readonly FrozenSet<string> _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
+    internal static readonly FrozenSet<string> _offerNames = ["Deals", "Freebies", "Collect stamps", "Cheeky Tuesday"];
+    internal static readonly FrozenSet<string> _dietaryNames = ["Vegan", "Vegetarian", "Halal", "Gluten Free"];
 
     private List<RestaurantCardViewModel> _allRestaurants = [];
 
