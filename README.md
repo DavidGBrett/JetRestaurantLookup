@@ -70,18 +70,9 @@ Run these in the terminal from the repository root
 
 | Task | Command |
 |------|---------|
-| **Build (Debug)** | `dotnet build` |
-| **Build (Release)** | `dotnet build -c Release` |
-| **Run** | `dotnet run` |
-| **Run (Release)** | `dotnet run -c Release` |
+| **Build** | `dotnet build` |
+| **Run** | `dotnet run --project JetRestaurantLookup` |
 | **Run tests** | `dotnet test` |
-| **Run tests (Release)** | `dotnet test -c Release` |
 
-### Executable Location
-**On Windows:**
-| Build Type | Path (relative to repository root) |
-|---------------------|---------------------------------|
-| **Debug**   | `JetRestaurantLookup\bin\Debug\net10.0\JetRestaurantLookup.exe` |
-| **Release** | `JetRestaurantLookup\bin\Release\net10.0\JetRestaurantLookup.exe` |
-
-As of now this project has only been tested on Windows 11
+### Note
+This project has only been tested on Windows
