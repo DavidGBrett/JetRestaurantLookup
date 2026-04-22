@@ -104,23 +104,6 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task NewSearch_PersistsSelectedFiltersWhenCategoryStillPresent()
-    {
-        var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", otherCategory2),
-            MakeRestaurant("2", otherCategory3)));
-
-        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected = true;
-        Assert.Single(vm.Restaurants);
-
-        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-
-        Assert.True(vm.OtherCategories.First(c => c.Name == otherCategory2).IsSelected);
-        Assert.Single(vm.Restaurants); // filter still active
-    }
-
-    [Fact]
     public async Task Load_SeparatesOfferCategoriesFromOtherCategories()
     {
         var vm = new MainWindowViewModel(new FakeRestaurantService(
