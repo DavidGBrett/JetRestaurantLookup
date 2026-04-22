@@ -218,18 +218,20 @@ public class MainWindowViewModelTests
     }
 
     [Fact]
-    public async Task FilterApplied_DietaryCategoryWithZeroMatchesRemainsVisible()
+    public async Task FilterApplied_DietaryCategories_AllAppearVisibleEvenWithNoMatches()
     {
-        var presentDietaryCategory = dietaryCategory1;
-        var absentDietaryCategory  = dietaryCategory2;
+        var selectedOtherCategory = otherCategory1;
 
         var vm = new MainWindowViewModel(new FakeRestaurantService(
-            MakeRestaurant("1", otherCategory1, presentDietaryCategory),
-            MakeRestaurant("2", otherCategory3)));
+            MakeRestaurant("1", selectedOtherCategory)));
 
         await vm.LoadRestaurantsCommand.ExecuteAsync(null);
-        vm.OtherCategories.Single(c => c.Name == otherCategory1).IsSelected = true;
 
-        Assert.True(vm.DietaryCategories.Single(c => c.Name == absentDietaryCategory).IsVisible);
+        // apply filter, for restaurant with no dietary category
+        vm.OtherCategories.Single(c => c.Name == selectedOtherCategory).IsSelected = true;
+
+        // all dietary categories should still be visible
+        Assert.All(MainWindowViewModel._dietaryNames, name =>
+            Assert.Contains(vm.DietaryCategories, c => c.Name == name && c.IsVisible));
     }
 }
