@@ -18,7 +18,7 @@ A coding assignment for the Early Careers Software Engineering Program at Just E
 
 ## Features
 - View the name, address & rating of 10 restaurants near any uk postcode.
-- Filter by dietary options (e.g., "Vegan"), special offers (e.g., "Freebies"), and cuisine types (e.g., "Italian").
+- Filter by dietary options (e.g. "Vegan"), special offers (e.g. "Freebies"), and cuisine types (e.g. "Italian").
 - Open restaurants on Google Maps or [just-eat.co.uk](https://www.just-eat.co.uk)
 
 ## UI
@@ -46,7 +46,7 @@ Run these in the terminal from the repository root
 |------|---------|
 | **Build** | `dotnet build` |
 | **Run** | `dotnet run --project JetRestaurantLookup` |
-| **Run tests** | `dotnet test` |
+| **Test** | `dotnet test` |
 
 ### Note
 This project has only been tested on Windows
