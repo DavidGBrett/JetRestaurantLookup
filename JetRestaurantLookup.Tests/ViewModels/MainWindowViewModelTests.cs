@@ -247,4 +247,94 @@ public class MainWindowViewModelTests
         Assert.All(MainWindowViewModel._dietaryNames, name =>
             Assert.Contains(vm.DietaryCategories, c => c.Name == name && c.IsVisible));
     }
+
+    #region Search Text
+
+    [Fact]
+    public async Task SearchText_FiltersByRestaurantName()
+    {
+        var matchedRestaurant = MakeRestaurant("1");
+
+        var unmatchedRestaurant1 = MakeRestaurant("2");
+        var unmatchedRestaurant2 = MakeRestaurant("3");
+
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            matchedRestaurant,
+            unmatchedRestaurant1,
+            unmatchedRestaurant2
+        ));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        vm.SearchText = matchedRestaurant.Name;
+
+        Assert.Single(vm.Restaurants);
+
+        Assert.Equal(vm.Restaurants.Single().Name, matchedRestaurant.Name);
+    }
+
+    [Fact]
+    public async Task SearchText_FiltersByRestaurantCategory()
+    {
+        var matchedCategory = otherCategory1;
+        var matchedRestaurant = MakeRestaurant("1", otherCategory1);
+
+        var unmatchedRestaurant1 = MakeRestaurant("2", otherCategory2);
+        var unmatchedRestaurant2 = MakeRestaurant("3", otherCategory3);
+
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            matchedRestaurant,
+            unmatchedRestaurant1,
+            unmatchedRestaurant2
+        ));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        vm.SearchText = matchedCategory;
+
+        Assert.Single(vm.Restaurants);
+
+        Assert.Equal(vm.Restaurants.Single().Name, matchedRestaurant.Name);
+    }
+
+    [Fact]
+    public async Task SearchText_FiltersByPartialRestaurantName()
+    {
+        var matchedRestaurant = MakeRestaurant("1");
+
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            matchedRestaurant
+        ));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        // set search to part of the restaurant name
+        vm.SearchText = matchedRestaurant.Name.Substring(0,4);
+
+        Assert.Single(vm.Restaurants);
+
+        Assert.Equal(vm.Restaurants.Single().Name, matchedRestaurant.Name);
+    }
+
+    [Fact]
+    public async Task SearchText_FiltersByPartialRestaurantCategoryName()
+    {
+        var matchedCategory = otherCategory1;
+        var matchedRestaurant = MakeRestaurant("1", otherCategory1);
+
+        var vm = new MainWindowViewModel(new FakeRestaurantService(
+            matchedRestaurant
+        ));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        // set search to part of the category name
+        vm.SearchText = matchedCategory.Substring(0,4);
+
+        Assert.Single(vm.Restaurants);
+
+        Assert.Equal(vm.Restaurants.Single().Name, matchedRestaurant.Name);
+    }
+
+    #endregion search
 }
