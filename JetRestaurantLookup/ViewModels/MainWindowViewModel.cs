@@ -23,6 +23,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial string Postcode { get; set; } = "EC4M 7RF";
 
     [ObservableProperty]
+    public partial string SearchText { get; set; } = string.Empty;
+
+    [ObservableProperty]
     public partial string? StatusMessage { get; set; }
 
     [ObservableProperty]
@@ -49,6 +52,11 @@ public partial class MainWindowViewModel : ViewModelBase
             ApplyFilter();
     }
 
+    partial void OnSearchTextChanged(string value)
+    {
+        ApplyFilter();
+    }
+
     private IEnumerable<CategoryFilterViewModel> GetAllFilters() => OfferCategories.Concat(DietaryCategories).Concat(OtherCategories);
 
     private static ObservableCollection<CategoryFilterViewModel> CreateCategoryFilterGroup(
@@ -70,10 +78,18 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ApplyFilter()
     {
         var selected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToList();
+        var searchTerms = SearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var filtered = selected.Count == 0
+        var filtered = selected.Count == 0 && searchTerms.Length == 0
             ? _allRestaurants
-            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
+            : _allRestaurants
+            .Where(r => selected.All(category => r.Cuisines.Contains(category)))
+            .Where(r => searchTerms.All(
+                term => r.Name.Contains(term, StringComparison.OrdinalIgnoreCase) 
+                || 
+                r.Cuisines.Any(cuisine => cuisine.Contains(term, StringComparison.OrdinalIgnoreCase))
+            ))
+            .ToList();
 
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
 

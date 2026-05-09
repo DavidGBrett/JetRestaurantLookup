@@ -32,6 +32,13 @@
                         <KeyBinding Gesture="Enter" Command="{Binding LoadRestaurantsCommand}" />
                     </TextBox.KeyBindings>
                 </TextBox>
+
+                <TextBlock Text="Search" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                        Width="160"
+                        MaxWidth="160"
+                        PlaceholderText="e.g. Pizza"
+                        ToolTip.Tip="Search restaurants by name or category" />
             </StackPanel>
         </Border>
         <Grid Grid.Row="1" ColumnDefinitions="220,*">
