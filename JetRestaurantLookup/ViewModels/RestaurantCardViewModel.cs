@@ -10,7 +10,8 @@ public class RestaurantCardViewModel
     public string LogoUrl { get; }
     public string Address { get; }
     public List<string> Cuisines { get; }
-    public string RatingScore { get; }
+    public double StarRating { get; }
+    public string RatingScoreText { get; }
     public string RatingCountText { get; }
     public IRelayCommand OpenGoogleMapsCommand { get; }
     public IRelayCommand OpenJustEatCommand { get; }
@@ -20,7 +21,8 @@ public class RestaurantCardViewModel
         Name = restaurant.Name;
         LogoUrl = restaurant.LogoUrl;
         Cuisines = restaurant.Cuisines;
-        RatingScore = $"★ {restaurant.Rating.StarRating:F1}";
+        StarRating = restaurant.Rating.StarRating;
+        RatingScoreText = $"★ {restaurant.Rating.StarRating:F1}";
         RatingCountText = $"{restaurant.Rating.Count} ratings";
 
         var addressLine1 = restaurant.Address.FirstLine.Replace("\n", " ").Replace("\r", "").Trim();
