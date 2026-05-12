@@ -18,8 +18,16 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IRestaurantService restaurantService)
     {
         _restaurantService = restaurantService;
+
+        RatingStars = new ObservableCollection<StarFilterViewModel>(
+            Enumerable.Range(1, 5)
+            .Select(value => new StarFilterViewModel(value, ToggleMinimumRating))
+        );
+
+        UpdateRatingStarSelection();
     }
-    
+    public ObservableCollection<StarFilterViewModel> RatingStars { get; }
+
     private int _minimumRating = 0;
 
     public int? MinimumRating
@@ -36,9 +44,28 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     _minimumRating = parsedValue;
                     OnPropertyChanged(nameof(MinimumRating));
+                    UpdateRatingStarSelection();
                     ApplyFilter();
                 }
             }
+        }
+    }
+
+    private void UpdateRatingStarSelection()
+    {
+        foreach (var ratingStar in RatingStars)
+            ratingStar.IsSelected = ratingStar.Value <= _minimumRating;
+    }
+
+    [RelayCommand]
+    private void ToggleMinimumRating(int rating)
+    {
+        // clear rating if the current minimum rating star is clicked again
+        if (rating == _minimumRating){
+            MinimumRating = 0;
+        }
+        else{
+            MinimumRating = rating;
         }
     }
 

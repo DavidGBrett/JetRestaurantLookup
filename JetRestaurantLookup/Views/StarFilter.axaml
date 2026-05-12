@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:JetRestaurantLookup.ViewModels"
+             x:Class="JetRestaurantLookup.Views.StarFilter"
+             x:DataType="vm:StarFilterViewModel">
+    <UserControl.Styles>
+        <Style Selector="Button.starFilterButton">
+            <Setter Property="Foreground" Value="#8F8F8F" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="2,0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="Button.starFilterButton:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.starFilterButton:pressed">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.starFilterButton.selected">
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAccentBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Button Content="★"
+            Classes.starFilterButton="True"
+            Classes.selected="{Binding IsSelected}"
+            Command="{Binding SelectCommand}" />
+</UserControl>
