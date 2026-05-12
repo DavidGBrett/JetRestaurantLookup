@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,6 +18,28 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IRestaurantService restaurantService)
     {
         _restaurantService = restaurantService;
+    }
+    
+    private int _minimumRating = 0;
+
+    public int? MinimumRating
+    {
+        get => _minimumRating;
+        set
+        {
+            var parsedValue = value ?? 0;
+
+            // Only accept 0-5
+            if (parsedValue >= 0 && parsedValue <= 5)
+            {
+                if (parsedValue != _minimumRating)
+                {
+                    _minimumRating = parsedValue;
+                    OnPropertyChanged(nameof(MinimumRating));
+                    ApplyFilter();
+                }
+            }
+        }
     }
 
     [ObservableProperty]
@@ -71,9 +94,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var selected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToList();
 
-        var filtered = selected.Count == 0
+        var withCategory = selected.Count == 0
             ? _allRestaurants
-            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
+            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category)));
+        
+        var withMinimumRating = withCategory.Where(r => r.StarRating >= _minimumRating);
+
+        var filtered = withMinimumRating;
 
         Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
 
