@@ -42,7 +42,7 @@
             </ItemsControl>
 
             <StackPanel Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <SelectableTextBlock Text="{Binding RatingScore}"
+                <SelectableTextBlock Text="{Binding RatingScoreText}"
                            FontSize="20" FontWeight="Bold"
                            Foreground="{DynamicResource SystemControlHighlightAccentBrush}"
                            HorizontalAlignment="Center" />
