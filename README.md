@@ -86,6 +86,8 @@ For postcode handling, the application takes a flexible approach. User input is 
 ## Future Improvements
 There are several areas where the application could be improved or extended.
 
+The most obvious improvement would be to remove the 10 result limit that was given by the assignment = but more work may need to be done to ensure performance is not heavily degraded by that.
+
 The UI could be further refined and polished, with general improvements and additional elements such as icons for cuisines and categories.
 
 Location input could be improved beyond manual postcode entry, for example by allowing selection on a map or automatic location detection.
