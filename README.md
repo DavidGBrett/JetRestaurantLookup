@@ -88,8 +88,6 @@ There are several areas where the application could be improved or extended.
 
 The UI could be further refined and polished, with general improvements and additional elements such as icons for cuisines and categories.
 
-Filtering and search could be extended to include searching by restaurant name and filtering by rating.
-
 Location input could be improved beyond manual postcode entry, for example by allowing selection on a map or automatic location detection.
 
 Support for other platforms (e.g. Linux and macOS) could be added. The application is currently only tested on Windows and only a Windows executable is provided in releases.
