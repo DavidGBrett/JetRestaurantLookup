@@ -247,6 +247,37 @@ public class MainWindowViewModelTests
         Assert.All(MainWindowViewModel._dietaryNames, name =>
             Assert.Contains(vm.DietaryCategories, c => c.Name == name && c.IsVisible));
     }
+    [Fact]
+    public async Task ResultsAreSortedByStarRatingDescending()
+    {
+        var restaurants = new[]
+        {
+            MakeRestaurant("1", otherCategory1) with
+            {
+                Rating = new Rating { Count = 10, StarRating = 3.0 }
+            },
+            MakeRestaurant("2", otherCategory1) with
+            {
+                Rating = new Rating { Count = 20, StarRating = 5.0 }
+            },
+            MakeRestaurant("3", otherCategory1) with
+            {
+                Rating = new Rating { Count = 5, StarRating = 1.0 }
+            },
+            MakeRestaurant("4", otherCategory1) with
+            {
+                Rating = new Rating { Count = 15, StarRating = 4.5 }
+            },
+        };
+
+        var vm = new MainWindowViewModel(new FakeRestaurantService(restaurants));
+
+        await vm.LoadRestaurantsCommand.ExecuteAsync(null);
+
+        Assert.Equal(4, vm.Restaurants.Count);
+        for (var i = 1; i < vm.Restaurants.Count; i++)
+            Assert.True(vm.Restaurants[i - 1].StarRating >= vm.Restaurants[i].StarRating);
+    }
 
     [Fact]
     public async Task FilterByRating_NoResultsBelowMinimumRating()

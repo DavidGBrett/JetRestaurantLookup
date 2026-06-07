@@ -123,13 +123,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var withCategory = selected.Count == 0
             ? _allRestaurants
-            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category)));
-        
+            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
+            
         var withMinimumRating = withCategory.Where(r => r.StarRating >= _minimumRating);
 
         var filtered = withMinimumRating;
 
-        Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
+        var ordered = filtered.OrderByDescending(r => r.StarRating);
+
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(ordered);
 
         var counts = filtered.SelectMany(r => r.Cuisines).GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
         foreach (var filter in GetAllFilters())
