@@ -44,6 +44,8 @@ public class MainWindowViewModelTests
         }
     }
 
+    #region Category Filtering
+
     [Fact]
     public async Task NoFiltersSelected_ShowsAllRestaurants()
     {
@@ -248,6 +250,8 @@ public class MainWindowViewModelTests
             Assert.Contains(vm.DietaryCategories, c => c.Name == name && c.IsVisible));
     }
 
+    #endregion
+
     #region Search Text
 
     [Fact]
@@ -337,7 +341,9 @@ public class MainWindowViewModelTests
     }
 
     #endregion search
-    
+
+    #region Rating
+
     [Fact]
     public async Task ResultsAreSortedByStarRatingDescending()
     {
@@ -405,4 +411,6 @@ public class MainWindowViewModelTests
 
         Assert.All(vm.Restaurants, r => Assert.True(r.StarRating >= 3));
     }
+
+    #endregion
 }
