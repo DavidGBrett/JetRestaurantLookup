@@ -130,25 +130,24 @@ public partial class MainWindowViewModel : ViewModelBase
         var selected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToList();
         var searchTerms = SearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var withCategory = selected.Count == 0
-            ? _allRestaurants
-            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
+        // Only keep restaurants matching all selected categories
+        var filtered = _allRestaurants
+            .Where(r => selected.All(category => r.Cuisines.Contains(category)))
 
-        var withSearchTerm = searchTerms.Length == 0
-            ? withCategory
-            : withCategory.Where(r => searchTerms.All(
-                term => r.Name.Contains(term, StringComparison.OrdinalIgnoreCase) 
-                || 
-                r.Cuisines.Any(cuisine => cuisine.Contains(term, StringComparison.OrdinalIgnoreCase))
-            ));
+        // Filter by name or cuisine keyword
+            .Where(r => searchTerms.All(
+                term => r.Name.Contains(term, StringComparison.OrdinalIgnoreCase)
+                     || r.Cuisines.Any(cuisine => cuisine.Contains(term, StringComparison.OrdinalIgnoreCase))))
 
-        var withMinimumRating = withSearchTerm.Where(r => r.StarRating >= _minimumRating);
+        // Apply star rating threshold
+            .Where(r => r.StarRating >= _minimumRating)
 
-        var filtered = withMinimumRating;
+        // Sort by rating, highest first
+            .OrderByDescending(r => r.StarRating)
 
-        var ordered = filtered.OrderByDescending(r => r.StarRating);
+            .ToList();
 
-        Restaurants = new ObservableCollection<RestaurantCardViewModel>(ordered);
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
 
         var counts = filtered.SelectMany(r => r.Cuisines).GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
         foreach (var filter in GetAllFilters())
