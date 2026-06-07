@@ -46,7 +46,20 @@
                           Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                           BorderBrush="Gray" BorderThickness="0,0,1,0">
                 <StackPanel Spacing="4" Margin="8">
-                    <TextBlock Text="Offers" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <TextBlock Text="Minimum Rating" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <ItemsControl ItemsSource="{Binding RatingStars}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="2" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:StarFilter />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Offers" FontWeight="SemiBold" Margin="0,8,0,4" />
                     <ItemsControl ItemsSource="{Binding OfferCategories}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

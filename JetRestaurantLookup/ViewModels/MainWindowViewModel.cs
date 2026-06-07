@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,6 +18,55 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IRestaurantService restaurantService)
     {
         _restaurantService = restaurantService;
+
+        RatingStars = new ObservableCollection<StarFilterViewModel>(
+            Enumerable.Range(1, 5)
+            .Select(value => new StarFilterViewModel(value, ToggleMinimumRating))
+        );
+
+        UpdateRatingStarSelection();
+    }
+    public ObservableCollection<StarFilterViewModel> RatingStars { get; }
+
+    private int _minimumRating = 0;
+
+    public int? MinimumRating
+    {
+        get => _minimumRating;
+        set
+        {
+            var parsedValue = value ?? 0;
+
+            // Only accept 0-5
+            if (parsedValue >= 0 && parsedValue <= 5)
+            {
+                if (parsedValue != _minimumRating)
+                {
+                    _minimumRating = parsedValue;
+                    OnPropertyChanged(nameof(MinimumRating));
+                    UpdateRatingStarSelection();
+                    ApplyFilter();
+                }
+            }
+        }
+    }
+
+    private void UpdateRatingStarSelection()
+    {
+        foreach (var ratingStar in RatingStars)
+            ratingStar.IsSelected = ratingStar.Value <= _minimumRating;
+    }
+
+    [RelayCommand]
+    private void ToggleMinimumRating(int rating)
+    {
+        // clear rating if the current minimum rating star is clicked again
+        if (rating == _minimumRating){
+            MinimumRating = 0;
+        }
+        else{
+            MinimumRating = rating;
+        }
     }
 
     [ObservableProperty]
@@ -80,18 +130,25 @@ public partial class MainWindowViewModel : ViewModelBase
         var selected = GetAllFilters().Where(c => c.IsSelected).Select(c => c.Name).ToList();
         var searchTerms = SearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var filtered = selected.Count == 0 && searchTerms.Length == 0
+        var withCategory = selected.Count == 0
             ? _allRestaurants
-            : _allRestaurants
-            .Where(r => selected.All(category => r.Cuisines.Contains(category)))
-            .Where(r => searchTerms.All(
+            : _allRestaurants.Where(r => selected.All(category => r.Cuisines.Contains(category))).ToList();
+
+        var withSearchTerm = searchTerms.Length == 0
+            ? withCategory
+            : withCategory.Where(r => searchTerms.All(
                 term => r.Name.Contains(term, StringComparison.OrdinalIgnoreCase) 
                 || 
                 r.Cuisines.Any(cuisine => cuisine.Contains(term, StringComparison.OrdinalIgnoreCase))
-            ))
-            .ToList();
+            ));
 
-        Restaurants = new ObservableCollection<RestaurantCardViewModel>(filtered);
+        var withMinimumRating = withSearchTerm.Where(r => r.StarRating >= _minimumRating);
+
+        var filtered = withMinimumRating;
+
+        var ordered = filtered.OrderByDescending(r => r.StarRating);
+
+        Restaurants = new ObservableCollection<RestaurantCardViewModel>(ordered);
 
         var counts = filtered.SelectMany(r => r.Cuisines).GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
         foreach (var filter in GetAllFilters())
